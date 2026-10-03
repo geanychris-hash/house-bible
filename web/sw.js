@@ -9,6 +9,7 @@ const SHELL = [
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
   'js/core/app.js', 'js/core/router.js', 'js/core/data.js', 'js/core/store.js', 'js/core/schema.js', 'js/core/api.js',
   'js/core/auth.js', 'js/core/files.js', 'js/core/ui.js', 'js/core/connect.js', 'js/core/home.js', 'js/core/icons.js', 'js/core/views.json',
+  'js/views/wall.js', 'css/wall.css',
 ];
 
 self.addEventListener('install', e => {
