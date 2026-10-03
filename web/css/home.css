@@ -1,0 +1,10 @@
+/* Home and visuals. Tokens only. */
+.home-bar { height: 8px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; margin-bottom: 10px; }
+.home-bar span { display: block; height: 100%; background: var(--accent); }
+.home-step { grid-template-columns: 28px 1fr; align-items: start; column-gap: 10px; min-height: var(--tap); }
+.home-step .muted { grid-column: 2; font-size: 13px; }
+.home-step .title { grid-column: 2; }
+.home-check { grid-column: 1; grid-row: 1 / span 2; width: 22px; height: 22px; border: 2px solid var(--line); border-radius: 50%; display: grid; place-items: center; font-size: 13px; color: var(--accent-ink); }
+.home-step.done .home-check { background: var(--good); border-color: var(--good); }
+.home-step.done .title { color: var(--muted); }
+.home-panel .item .muted { font-size: 13px; }

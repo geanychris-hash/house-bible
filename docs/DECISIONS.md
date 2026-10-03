@@ -175,3 +175,11 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [S5] Sequencing now reports real cycles and, separately, projects blocked behind a cycle (v1 lumped them together).
 - 2026-10-03 [S5] Reports: capital-improvement tally counts expenses flagged capital_improvement, plus unflagged-blank expenses on projects flagged capital_improvement. Assets have no value column, so inventory cost is a best-guess match from an expense whose item text contains the asset name.
 - 2026-10-03 [S5] Views register as projects (order 40), expenses (45), tools (46), utilities (47), reports (48). Materials and shopping live inside the Projects view (tabs and detail page) via `views/materials.js`.
+- 2026-10-03 [S6] Receipt import uses content-derived ids and name checks, so reruns and manual edits are safe; returns stay as negative expense rows (net totals match the Receipts note).
+- 2026-10-03 [S6] Paint with no room named goes on a placeholder room "Paint: room not yet known" and its two can purchases link to it; Chris moves the note to the real room then deletes the placeholder. Home checklist ignores that room.
+- 2026-10-03 [S6] Zillow and Redfin returned 403 and Realtor.com was blocked for the fetch tool, so seed/house.json holds address and heat only; year built, sqft, floors, lat, lon are null (not guessed). Home checklist asks Chris.
+- 2026-10-03 [S6] Radiators are assets whose name or kind contains "radiator", placed by room. There is no status column, so visuals colour them from keywords in notes. Heating season on the year wheel is assumed Oct 15 to May 1.
+- 2026-10-03 [S6] Home links to a section only if that view is registered; recur.js and consumable status are imported dynamically so Home still loads before S3 merges.
+## Cross-stream requests (S6)
+- 2026-10-03 [S6] To S2: Home screen has no link to a house-facts/settings editor (checklist step "House facts" links to a view id `settings`, which does not exist yet). Please provide one or tell S7 to.
+- 2026-10-03 [S6] To S1: settings.house default lat/lon (42.158, -71.145) is unverified; seed/house.json leaves them null on purpose, so do not load it over the defaults.
