@@ -144,3 +144,9 @@ test('ruleText is plain language', () => {
   assert.equal(ruleText({ type: 'seasonal', from: '04-01', to: '04-30' }), 'Every year, Apr 1 to Apr 30');
   assert.equal(ruleText('{"type":"monthly","interval":6}'), 'Every 6 months');
 });
+test('season-limited weekly rule skips out-of-season dates', () => {
+  const t = T({ type: 'weekly', interval: 1, from: '10-15', to: '04-30' }, '2026-10-17');
+  assert.equal(nextDue(t, [], '2026-10-17'), '2026-10-17');
+  assert.equal(nextDue(t, [L('2027-04-24')], '2027-04-25'), '2027-10-16');
+  assert.deepEqual(occurrences(t, '2027-04-20', '2027-05-10'), ['2027-04-24']);
+});

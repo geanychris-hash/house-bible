@@ -97,6 +97,14 @@ function nth(task, r, k) {
 }
 const ANCHORED = new Set(['yearly', 'monthly', 'weekly', 'days']);
 
+/** Optional season limit on anchored rules: {from:'MM-DD', to:'MM-DD'} keeps only occurrences inside it
+ *  (e.g. weekly boiler checks only in the heating season). Extension of CONTRACT section 5. */
+function inSeason(date, r) {
+  if (!r.from || !r.to) return true;
+  const md = date.slice(5);
+  return r.from <= r.to ? md >= r.from && md <= r.to : md >= r.from || md <= r.to;
+}
+
 function windowsAround(r, fromYear, toYear) {
   const [fm, fd] = r.from.split('-').map(Number), [tm, td] = r.to.split('-').map(Number);
   const out = [];
@@ -119,7 +127,7 @@ export function occurrences(task, from, to) {
     for (let k = 0; k < 20000; k++) {
       const d = nth(task, r, k);
       if (d > to) break;
-      if (d >= from) out.push(d);
+      if (d >= from && inSeason(d, r)) out.push(d);
     }
   } else if (r.type === 'seasonal' && r.from && r.to) {
     const y0 = Number(from.slice(0, 4)) - 1, y1 = Number(to.slice(0, 4));
@@ -155,6 +163,7 @@ function compute(task, logs, today) {
     const lead = leadDays(r);
     for (let k = 0; k < 20000; k++) {
       const o = nth(task, r, k);
+      if (!inSeason(o, r)) continue;
       if (!done || addDays(o, -lead) > done) { res.due = o; break; }
     }
   } else if (r.type === 'seasonal' && r.from && r.to) {
