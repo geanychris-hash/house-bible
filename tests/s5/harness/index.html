@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>:root{--ink:#10202a;--muted:#566871;--line:#c9d3d8;--surface:#f8fafb;--surface-2:#eef2f4;--accent:#0f6a78;--accent-ink:#fff;--accent-soft:#d6eaed}body{margin:0;background:#e8ecee;color:var(--ink);font:16px system-ui}#nav{display:flex;gap:6px;overflow-x:auto;padding:8px}main{padding:8px 16px}</style></head>
+<body><div id="nav"></div><main id="app"></main>
+<script type="module">
+const mods = ['projects','expenses','tools','utilities','reports'];
+for (const m of mods) await import(`/js/views/${m}.js`);
+let cleanup;
+window.show = id => { cleanup && cleanup(); const app = document.getElementById('app'); app.replaceChildren(); cleanup = window.__views[id].render(app, {}); };
+const nav = document.getElementById('nav');
+Object.values(window.__views).forEach(v => { const b = document.createElement('button'); b.textContent = v.title; b.onclick = () => show(v.id); nav.append(b); });
+window.ready = true;
+</script></body></html>

@@ -1,0 +1,67 @@
+/* S5 views: projects, materials, expenses, tools, utilities, reports. Uses shared tokens; falls back to system colors. */
+.s5-list, .s5-panel { --s5-ink: var(--ink, CanvasText); --s5-muted: var(--muted, GrayText); --s5-line: var(--line, color-mix(in srgb, CanvasText 25%, transparent)); --s5-surface: var(--surface, Canvas); --s5-surface2: var(--surface-2, color-mix(in srgb, CanvasText 6%, Canvas)); --s5-accent: var(--accent, LinkText); --s5-accent-ink: var(--accent-ink, Canvas); --s5-accent-soft: var(--accent-soft, color-mix(in srgb, LinkText 14%, Canvas)); --s5-bad: var(--bad, #a22a2a); --s5-bad-bg: var(--bad-bg, color-mix(in srgb, #a22a2a 14%, Canvas)); --s5-warn: var(--warn, #8a5200); --s5-warn-bg: var(--warn-bg, color-mix(in srgb, #8a5200 14%, Canvas)); --s5-good: var(--good, #1d6a39); --s5-good-bg: var(--good-bg, color-mix(in srgb, #1d6a39 14%, Canvas)); }
+.s5-list { display: grid; gap: 8px; min-width: 0; }
+.s5-panel { background: var(--s5-surface); color: var(--s5-ink); border: 1px solid var(--s5-line); border-radius: 8px; padding: 14px; min-width: 0; }
+.s5-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--s5-line); }
+.s5-panel h2 { margin: 0; font-size: 1.1rem; }
+.s5-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.s5-row.spread { justify-content: space-between; }
+.s5-muted { color: var(--s5-muted); font-size: .9rem; margin: 0; }
+.s5-mono { font-variant-numeric: tabular-nums; }
+.s5-top { margin-top: 8px; }
+.s5-foot { margin-top: 10px; }
+.s5-btn { border: 1px solid var(--s5-line); background: var(--s5-surface2); color: var(--s5-ink); border-radius: 6px; padding: 8px 12px; cursor: pointer; min-height: 44px; font: inherit; }
+.s5-btn:hover { border-color: var(--s5-accent); }
+.s5-btn.primary { background: var(--s5-accent); color: var(--s5-accent-ink); border-color: var(--s5-accent); font-weight: 600; }
+.s5-btn.small { padding: 4px 10px; min-height: 44px; font-size: .85rem; }
+.s5-chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: .75rem; font-weight: 600; background: var(--s5-surface2); border: 1px solid var(--s5-line); color: var(--s5-muted); }
+.s5-chip.good { background: var(--s5-good-bg); color: var(--s5-good); border-color: transparent; }
+.s5-chip.warn { background: var(--s5-warn-bg); color: var(--s5-warn); border-color: transparent; }
+.s5-chip.bad { background: var(--s5-bad-bg); color: var(--s5-bad); border-color: transparent; }
+.s5-chip.acc { background: var(--s5-accent-soft); color: var(--s5-accent); border-color: transparent; }
+.s5-link { border: 0; background: none; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; min-width: 24px; min-height: 24px; padding: 0 4px; }
+.s5-item { border: 1px solid var(--s5-line); border-radius: 6px; padding: 10px 12px; background: var(--s5-surface); color: var(--s5-ink); display: grid; gap: 4px; min-width: 0; }
+.s5-item.s5-click { cursor: pointer; min-height: 44px; }
+.s5-item.s5-click:hover { border-color: var(--s5-accent); }
+.s5-title { font-weight: 600; overflow-wrap: anywhere; }
+.s5-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.s5-tabs button { border: 1px solid var(--s5-line); background: var(--s5-surface, Canvas); color: var(--s5-ink, CanvasText); border-radius: 6px; padding: 6px 14px; min-height: 44px; cursor: pointer; white-space: nowrap; font: inherit; font-weight: 500; }
+.s5-tabs button[aria-selected="true"] { background: var(--s5-accent); color: var(--s5-accent-ink); border-color: var(--s5-accent); }
+.s5-banner { background: var(--s5-accent-soft); color: var(--s5-ink); border: 1px solid var(--s5-line); border-radius: 6px; padding: 10px 12px; font-size: .9rem; }
+.s5-banner.bad { background: var(--s5-bad-bg); border-color: var(--s5-bad); }
+.s5-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+.s5-stat { display: grid; gap: 2px; }
+.s5-stat b { font-size: 1.5rem; font-variant-numeric: tabular-nums; font-weight: 600; }
+.s5-stat span { font-size: .75rem; color: var(--s5-muted); text-transform: uppercase; letter-spacing: .06em; }
+.s5-bar { height: 8px; border-radius: 4px; background: var(--s5-surface2); border: 1px solid var(--s5-line); overflow: hidden; margin: 6px 0 2px; }
+.s5-bar i { display: block; height: 100%; background: var(--s5-accent); }
+.s5-bar.over i { background: var(--s5-bad); }
+.s5-check { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; cursor: pointer; }
+.s5-check input, .s5-step input { width: 22px; height: 22px; }
+.s5-after { padding: 2px 4px; }
+.s5-steps { display: grid; gap: 4px; }
+.s5-step { display: flex; gap: 10px; align-items: center; min-height: 44px; }
+.s5-step span { flex: 1; overflow-wrap: anywhere; }
+.s5-step span.done { text-decoration: line-through; color: var(--s5-muted); }
+.s5-panel input:not([type=checkbox]), .s5-panel select, .s5-list > input, .s5-list > select, .s5-row > select { padding: 9px 10px; border: 1px solid var(--s5-line); border-radius: 6px; background: var(--s5-surface); color: var(--s5-ink); font: inherit; min-height: 44px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.s5-list > input, .s5-row > input { width: 100%; }
+.s5-narrow { width: 7em !important; }
+.s5-mat { border: 1px solid var(--s5-line); border-radius: 6px; padding: 10px; display: grid; gap: 8px; min-width: 0; }
+.s5-mat.have { opacity: .7; }
+.s5-mat-top { display: flex; gap: 8px; align-items: center; }
+.s5-mat-top > input:not([type=checkbox]) { flex: 1; width: 100%; }
+.s5-mat-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.s5-mat-nums label { display: grid; gap: 2px; font-size: .75rem; color: var(--s5-muted); }
+.s5-mat-nums input { width: 100%; }
+.s5-mat-foot a { color: var(--s5-accent); padding: 12px 6px; }
+.s5-chart { width: 100%; max-width: 420px; height: auto; fill: var(--s5-accent); }
+.s5-thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
+.s5-thumbs img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid var(--s5-line); }
+
+@media print {
+  nav, header.app-header, .app-nav, .bottom-nav, .tabbar, .s5-noprint, .toast { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .s5-panel, .s5-item { break-inside: avoid; border-color: #999; background: #fff !important; color: #000 !important; box-shadow: none; }
+  .s5-muted { color: #333; }
+  .s5-chart { fill: #000; }
+}
