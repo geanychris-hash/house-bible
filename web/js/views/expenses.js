@@ -21,6 +21,7 @@ export function editExpense(e, defaults = {}, onDone = () => {}) {
       { k: 'category', label: 'Category', type: 'select', options: EXPENSE_CATEGORIES },
       { k: 'project', label: 'Project', type: 'ref', table: 'projects' },
       { k: 'room', label: 'Room', type: 'ref', table: 'rooms' },
+      { k: 'contact', label: 'Contractor (optional)', type: 'ref', table: 'contacts' },
       { k: 'receipt', label: 'Receipt (a document)', type: 'ref', table: 'documents', labelKey: 'title' },
       { k: 'capital_improvement', label: 'Capital improvement (adds to home value)', type: 'select', options: ['No', 'Yes'] },
       { k: 'notes', label: 'Notes', type: 'textarea' },

@@ -17,10 +17,10 @@ export function dueText(st) {
   return `${st.snoozedUntil ? 'Snoozed to ' : 'Due '}${fmtDate(st.due)} (${when.toLowerCase()})`;
 }
 
-export async function markDone(task, { date, note = '', cost = null, photos = [], silent = false } = {}) {
+export async function markDone(task, { date, note = '', cost = null, photos = [], contact = '', silent = false } = {}) {
   const row = await HB.save('task_log', {
     task: task.id, date: date || todayISO(), by: who(), note, cost: cost == null || cost === '' ? null : Number(cost),
-    photos: JSON.stringify(photos),
+    photos: JSON.stringify(photos), ...(contact ? { contact } : {}),
   });
   if (!silent) toast(`Done: ${task.title}`, { label: 'Undo', fn: () => HB.remove('task_log', row.id) });
   return row;
@@ -32,14 +32,17 @@ export function openDoneDialog(task) {
     const note = h('textarea', { rows: 3, placeholder: 'What you did, what you found (optional)' });
     const cost = h('input', { type: 'number', inputmode: 'decimal', step: '0.01', min: '0', placeholder: '0.00' });
     const photos = h('input', { type: 'file', accept: 'image/*', multiple: true });
+    const contact = h('select', { 'aria-label': 'Contractor' }, h('option', { value: '' }, '(none, did it myself)'));
+    HB.list('contacts').then(rows => rows.filter(c => !Number(c.deleted)).sort((a, b) => String(a.name).localeCompare(String(b.name)))
+      .forEach(c => contact.append(h('option', { value: c.id }, c.name + (c.trade ? ` (${c.trade})` : '')))));
     const save = h('button', { type: 'button', class: 'mt-btn mt-btn-primary', onclick: async () => {
       save.disabled = true; save.textContent = 'Saving';
       const ids = await uploadPhotos(photos.files, 'general');
-      await markDone(task, { date: date.value || todayISO(), note: note.value.trim(), cost: cost.value, photos: ids });
+      await markDone(task, { date: date.value || todayISO(), note: note.value.trim(), cost: cost.value, photos: ids, contact: contact.value });
       close();
     } }, 'Save');
     return h('div', { class: 'mt-form' }, h('p', { class: 'mt-muted' }, task.title),
-      field('Date done', date), field('Note', note), field('Cost ($)', cost), field('Photos', photos),
+      field('Date done', date), field('Note', note), field('Cost ($)', cost), field('Contractor', contact, 'Optional. Links this job to their contact page.'), field('Photos', photos),
       h('div', { class: 'mt-actions' }, h('button', { type: 'button', class: 'mt-btn', onclick: close }, 'Cancel'), save));
   });
 }
