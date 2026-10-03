@@ -9,7 +9,7 @@ export const SYSTEM_COLS = ['id', 'rev', 'updatedAt', 'updatedBy', 'deleted'];
 // Only non-text fields are listed. Types: num, bool, json, files, file.
 export const FIELD_TYPES = {
   rooms: { length_in: 'num', width_in: 'num', height_in: 'num', photos: 'files' },
-  assets: { pro_only: 'bool', photos: 'files', docs: 'json' },
+  assets: { pro_only: 'bool', photos: 'files', docs: 'json', expected_life_years: 'num', replace_cost: 'num', purchase_price: 'num', replacement_value: 'num' },
   shutoffs: { photos: 'files' },
   tasks: { rule: 'json', pro_only: 'bool', calendar: 'bool', active: 'bool' },
   task_log: { photos: 'files', cost: 'num' },
@@ -21,7 +21,7 @@ export const FIELD_TYPES = {
   materials: { qty: 'num', price_hd: 'num', price_hf: 'num', price_other: 'num', have: 'bool' },
   expenses: { amount: 'num', capital_improvement: 'bool' },
   tools: {},
-  utilities: { amount: 'num', usage: 'num' },
+  utilities: { amount: 'num', usage: 'num', hdd: 'num' },
   sensitive: {},
   settings: { value: 'json' },
 };

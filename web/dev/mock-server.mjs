@@ -19,10 +19,11 @@ const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; cha
   '.svg': 'image/svg+xml', '.jpg': 'image/jpeg' };
 
 export function createMockServer({ dataFile = path.join(here, 'data.json'), filesDir = path.join(here, 'files'), key = 'dev', serveStatic = true } = {}) {
-  let db = { rev: 0, tables: {}, files: {} };
+  let db = { rev: 0, tables: {}, files: {}, changelog: [] };
   try { db = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch { /* fresh */ }
   for (const t of TABLES) db.tables[t] = db.tables[t] || {};
   db.files = db.files || {};
+  db.changelog = db.changelog || [];
   const persist = () => { if (dataFile) { try { fs.writeFileSync(dataFile, JSON.stringify(db)); } catch { /* ignore */ } } };
 
   function handle(body) {
@@ -49,6 +50,7 @@ export function createMockServer({ dataFile = path.join(here, 'data.json'), file
           const saved = { ...row, rev: ++db.rev };
           // mimic the Sheet: json/files come back as text sometimes
           db.tables[table][row.id] = saved;
+          db.changelog.push({ rev: saved.rev, table, id: row.id, updatedBy: row.updatedBy || body.device || '', at: Date.now() });
           results.push({ table, id: row.id, status: 'accepted', row: saved });
         }
         persist();
@@ -73,6 +75,18 @@ export function createMockServer({ dataFile = path.join(here, 'data.json'), file
       }
       case 'syncCalendar': return { ok: true, created: 0, updated: 0, removed: 0 };
       case 'testAlert': return { ok: true };
+      case 'history': {
+        const limit = Math.min(500, Math.max(1, Math.floor(Number(body.limit) || 100)));
+        if (body.table && !TABLES.includes(body.table)) return { ok: false, error: 'bad_request', message: 'Unknown table' };
+        const entries = [];
+        for (let i = db.changelog.length - 1; i >= 0 && entries.length < limit; i--) {
+          const e = db.changelog[i];
+          if (body.table && e.table !== body.table) continue;
+          if (body.id && e.id !== String(body.id)) continue;
+          entries.push(e);
+        }
+        return { ok: true, entries };
+      }
       default: return { ok: false, error: 'bad_action', message: 'Unknown action' };
     }
   }
