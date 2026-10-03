@@ -1,0 +1,21 @@
+/* Global search palette (G1). Tokens only, so light and dark both work. */
+.hbs-overlay { position: fixed; inset: 0; z-index: 60; background: rgba(8, 16, 20, .55); display: flex; justify-content: center; align-items: flex-start; padding: max(12px, env(safe-area-inset-top, 0px)) 12px 12px; }
+.hbs-box { width: min(640px, 100%); max-height: min(78vh, 100%); display: flex; flex-direction: column; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 12px 40px rgba(0, 0, 0, .35); overflow: hidden; }
+.hbs-bar { display: flex; gap: 8px; padding: 10px; border-bottom: 1px solid var(--line); }
+.hbs-input { flex: 1 1 auto; min-width: 0; min-height: var(--tap); font: inherit; font-size: 16px; padding: 0 12px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; }
+.hbs-close { min-height: var(--tap); }
+.hbs-status { padding: 8px 14px 4px; font-size: 13px; }
+.hbs-list { list-style: none; margin: 0; padding: 0 6px 6px; overflow-y: auto; overscroll-behavior: contain; flex: 1 1 auto; }
+.hbs-group { list-style: none; }
+.hbs-rows { list-style: none; margin: 0; padding: 0; }
+.hbs-head { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 10px 8px 4px; }
+.hbs-more { font-family: var(--mono); font-size: 11px; letter-spacing: 0; text-transform: none; }
+.hbs-item { display: grid; gap: 1px; min-height: var(--tap); padding: 6px 10px; border-radius: 6px; cursor: pointer; align-content: center; }
+.hbs-item[aria-selected="true"] { background: var(--accent-soft); outline: 1px solid var(--accent); }
+.hbs-title { font-weight: 500; overflow-wrap: anywhere; }
+.hbs-sub { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.hbs-item mark { background: var(--warn-bg); color: var(--warn); border-radius: 2px; padding: 0 1px; }
+.hbs-foot { padding: 6px 14px; font-size: 11.5px; border-top: 1px solid var(--line); }
+body.hbs-open { overflow: hidden; }
+#searchbtn { min-height: var(--tap); }
+@media (max-width: 500px) { .hbs-foot { display: none; } }
