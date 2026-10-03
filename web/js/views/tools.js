@@ -22,6 +22,8 @@ export function editTool(t, defaults = {}, onDone = () => {}) {
       { k: 'category', label: 'Category', placeholder: 'Power tools' },
       { k: 'brand', label: 'Brand' },
       { k: 'model', label: 'Model' },
+      { k: 'location', label: 'Stored where', placeholder: 'Basement shelf 2' },
+      { k: 'lent_to', label: 'Lent to (blank if home)' },
       { k: 'notes', label: 'Notes', type: 'textarea' },
     ],
     onSave: async out => {
@@ -44,7 +46,7 @@ registerView({
     const draw = async () => {
       const all = await HB.list('tools');
       const q = st.q.trim().toLowerCase();
-      const match = t => !q || [t.name, t.brand, t.model, t.category, t.notes].some(x => String(x || '').toLowerCase().includes(q));
+      const match = t => !q || [t.name, t.brand, t.model, t.category, t.notes, t.location, t.lent_to].some(x => String(x || '').toLowerCase().includes(q));
       const rows = all.filter(t => (t.status === 'want' ? 'want' : 'own') === st.tab && match(t)).sort((a, b) => String(a.category || '~').localeCompare(String(b.category || '~')) || String(a.name).localeCompare(String(b.name)));
       const counts = { own: all.filter(t => t.status !== 'want').length, want: all.filter(t => t.status === 'want').length };
       const groups = new Map();
@@ -52,6 +54,8 @@ registerView({
       const card = t => h('div', { class: 's5-item s5-click', tabindex: '0', role: 'button', onclick: () => editTool(t, {}, draw), onkeydown: e => { if (e.key === 'Enter') editTool(t, {}, draw); } },
         h('div', { class: 's5-row spread' }, h('span', { class: 's5-title' }, t.name), t.status === 'want' ? chip('Want', 'warn') : null),
         h('span', { class: 's5-muted' }, [t.brand, t.model].filter(Boolean).join(' ')),
+        t.location ? h('span', { class: 's5-muted' }, 'Stored: ' + t.location) : null,
+        t.lent_to ? chip('Lent to ' + t.lent_to, 'warn') : null,
         t.status === 'want' ? btn('Got it: move to Own', async e => { e.stopPropagation(); await HB.save('tools', { id: t.id, status: 'own' }); draw(); }, 'small') : null);
       head.replaceChildren(
         panel(null, btn('Add tool', () => editTool(null, { status: st.tab }, draw), 'primary'), h('div', { class: 's5-muted' }, `${counts.own} owned, ${counts.want} on the wishlist`)),

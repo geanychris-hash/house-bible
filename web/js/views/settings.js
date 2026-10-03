@@ -13,6 +13,24 @@ const FIELDS = [
 ];
 const parse = v => { if (v && typeof v === 'object') return v; try { return JSON.parse(v || '{}') || {}; } catch { return {}; } };
 
+function histPanel() {
+  const box = h('div', { class: 'list' }, h('p', { class: 'muted' }, 'Tap to load the last 50 changes.'));
+  const load = async () => {
+    box.replaceChildren(h('p', { class: 'muted' }, 'Loading...'));
+    try {
+      const r = await HB.callApi('history', { limit: 50 });
+      const rows = (r && r.entries) || [];
+      box.replaceChildren(...(rows.length ? rows.map(e => h('div', { class: 'row' },
+        h('span', null, `${e.table} ${String(e.id).slice(0, 8)}`),
+        h('span', { class: 'muted' }, `${e.updatedBy || 'unknown'}, ${e.at ? new Date(Number(e.at) || e.at).toLocaleString() : ''}`))) : [h('p', { class: 'muted' }, 'No changes recorded yet.')]));
+    } catch (err) {
+      box.replaceChildren(h('p', { class: 'muted' }, 'Could not load history (offline, or the backend needs the latest deploy).'));
+    }
+  };
+  return h('section', { class: 'panel' }, h('header', null, h('h2', null, 'Change history')), box,
+    h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: load }, 'Show recent changes')));
+}
+
 registerView({
   id: 'settings', title: 'Settings', icon: 'tools', order: 95,
   render(container) {
@@ -34,7 +52,8 @@ registerView({
           h('dl', { class: 'kv' }, ...FIELDS.flatMap(f => [h('dt', null, f.label), h('dd', null, house[f.k] == null || house[f.k] === '' ? 'Not set' : String(house[f.k]))])),
           h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: edit }, 'Edit'))),
         h('section', { class: 'panel' },
-          h('p', { class: 'muted' }, 'Weather alert emails and rules are under Weather alerts. Device name and key: Connect.'))));
+          h('p', { class: 'muted' }, 'Weather alert emails and rules are under Weather alerts. Device name and key: Connect.')),
+        histPanel()));
     };
     draw();
     const un = HB.subscribe('settings', draw);

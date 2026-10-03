@@ -3,7 +3,7 @@ import { registerView } from '../core/router.js';
 import * as HBFiles from '../core/files.js';
 import { HB, h, panel, btn, empty, tabBar, money0, fmtDate, ensureCss, idMap, csvEscape, downloadText, watchTables } from './projects-common.js';
 import { lifespanSection, insuranceSection } from './reports-forecast.js';
-import { improvementsByYear, bigPurchases, matchAssetCost, parseJson, num0 } from '../core/plan.js';
+import { improvementsByYear, bigPurchases, matchAssetCost, insuranceValue, parseJson, num0 } from '../core/plan.js';
 
 /* Load thumbnails after the DOM exists; a missing photo never breaks the report. */
 function thumbs(ids) {
@@ -44,7 +44,7 @@ registerView({
         body = life;
       } else {
         const big = bigPurchases(expenses, st.threshold);
-        const csv = () => downloadText('inventory.csv', ['name,kind,room,brand,model,serial,installed,cost'].concat(assets.map(a => { const c = matchAssetCost(a, expenses); return [a.name, a.kind, rNames.get(a.room) || '', a.brand, a.model, a.serial, a.install_date, c ? c.amount : ''].map(csvEscape).join(','); })).join('\n'));
+        const csv = () => downloadText('inventory.csv', ['name,kind,room,brand,model,serial,installed,value,value_source'].concat(assets.map(a => { const c = insuranceValue(a, expenses); return [a.name, a.kind, rNames.get(a.room) || '', a.brand, a.model, a.serial, a.install_date, c.value ?? '', c.source || ''].map(csvEscape).join(','); })).join('\n'));
         body = h('div', { class: 's5-list' },
           panel('Insurance and resale inventory', h('div', { class: 's5-row s5-noprint' }, btn('Print', () => window.print(), 'small'), assets.length ? btn('Download CSV', csv, 'small') : null),
             h('p', { class: 's5-muted' }, 'Systems, appliances and fixtures with photos, plus big purchases. Cost is a best guess from the expense with the matching name.'),

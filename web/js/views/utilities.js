@@ -15,6 +15,7 @@ export function editBill(b, defaults = {}, onDone = () => {}) {
       { k: 'amount', label: 'Amount ($)', type: 'number' },
       { k: 'usage', label: 'Usage (optional)', type: 'number' },
       { k: 'unit', label: 'Unit', placeholder: 'therms, gallons, kWh' },
+      { k: 'hdd', label: 'Heating degree days (optional, from the bill)', type: 'number' },
       { k: 'notes', label: 'Notes', type: 'textarea' },
     ],
     onSave: async out => {
@@ -72,7 +73,7 @@ registerView({
             h('span', { class: 's5-muted s5-mono' }, `${yoy.year}: ${m.cur != null ? money0(m.cur) : 'no bill'}    ${yoy.year - 1}: ${m.prev != null ? money0(m.prev) : 'no bill'}`)))) : empty('No bills to compare.')) : null,
           panel('All bills', null, h('div', { class: 's5-list' }, trend.slice().reverse().map(r => h('div', { class: 's5-item s5-click', tabindex: '0', role: 'button', onclick: () => editBill(r, {}, draw), onkeydown: e => { if (e.key === 'Enter') editBill(r, {}, draw); } },
             h('div', { class: 's5-row spread' }, h('span', { class: 's5-title' }, fmtDate(r.date)), h('strong', { class: 's5-mono' }, money0(r.amount))),
-            h('div', { class: 's5-row s5-muted' }, r.usage ? `${r.usage} ${r.unit || unit}` : '', r.perUnit ? ` (${money(r.perUnit)} each)` : '', chg(r.pct), r.notes || ''))))))));
+            h('div', { class: 's5-row s5-muted' }, r.usage ? `${r.usage} ${r.unit || unit}` : '', r.perUnit ? ` (${money(r.perUnit)} each)` : '', r.usage && Number(r.hdd) > 0 ? ` ${(r.usage / r.hdd).toFixed(2)} ${r.unit || unit}/HDD ` : '', chg(r.pct), r.notes || ''))))))));
     };
     draw();
     return watchTables(container, ['utilities'], draw);
