@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apps Script CORS spike</title>
+<!--
+SPIKE: proves a browser page on another origin can POST text/plain JSON to an Apps Script
+web app and read the JSON reply (the web app answers with a 302 to googleusercontent.com,
+which fetch follows, and that reply carries Access-Control-Allow-Origin: *).
+
+Fastest test (3 minutes, no setup): at script.google.com make a new project, paste this as
+Code.gs, Deploy > New deployment > Web app > Execute as: Me, Who has access: Anyone, then
+paste the /exec URL below and press Test. Key can stay blank for this tiny script.
+
+  function doPost(e) {
+    var body = JSON.parse(e.postData.contents);
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, echo: body.action }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+It also works against the real House Bible deployment: use the real URL and key, action ping.
+
+Open this file straight from disk (origin "null") or from any web server. Both are cross-origin
+to script.google.com, which is the case that matters for GitHub Pages.
+-->
+<style>
+  body { font: 16px system-ui, sans-serif; max-width: 40rem; margin: 1rem auto; padding: 0 1rem; }
+  input, button { font: inherit; padding: .6rem; width: 100%; box-sizing: border-box; margin: .3rem 0; }
+  pre { background: #f3f4f6; padding: .8rem; white-space: pre-wrap; word-break: break-all; }
+</style>
+<h1>Apps Script CORS spike</h1>
+<input id="url" placeholder="https://script.google.com/macros/s/.../exec">
+<input id="key" placeholder="key (leave blank for the tiny echo script)">
+<button id="go">Test</button>
+<pre id="out">Not run yet.</pre>
+<script>
+document.getElementById('go').onclick = async () => {
+  const out = document.getElementById('out');
+  out.textContent = 'Running...';
+  const t0 = performance.now();
+  try {
+    const res = await fetch(document.getElementById('url').value.trim(), {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ key: document.getElementById('key').value, action: 'ping', device: 'spike' }),
+    });
+    const text = await res.text();
+    let parsed; try { parsed = JSON.parse(text); } catch { parsed = null; }
+    out.textContent = (parsed ? 'PASS: got JSON' : 'FAIL: reply was not JSON (wrong access setting? login page?)') +
+      '\nHTTP ' + res.status + ', redirected: ' + res.redirected + ', ' + Math.round(performance.now() - t0) + ' ms\n\n' + text.slice(0, 600);
+  } catch (e) {
+    out.textContent = 'FAIL: ' + e.message + '\nThis is the CORS or redirect failure. See docs/DECISIONS.md for the fallback.';
+  }
+};
+</script>
