@@ -22,6 +22,15 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [Claude] Sensitive data uses client-side encryption with a household passphrase (CONTRACT section 7), so the Sheet only holds ciphertext.
 - 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
 
+- 2026-10-03 [S2] View loading: the app reads `web/js/core/views.json` (a list of file names in `web/js/views/`) and dynamically imports each one, skipping failures. Reason: a plain import of a missing file puts a 404 in the console. `node web/dev/gen-views.mjs` writes the file; the mock server computes it live; `tools/deploy-pages.ps1` runs it. Integration must run it (or deploy) after merging view branches; the committed copy is `[]`.
+- 2026-10-03 [S2] Nav: first 4 views by `order` show in the phone tab bar, the rest under "More"; all show in the side nav on wide screens. A view with id `home` replaces the placeholder Home. `hidden:true` keeps a view out of the nav (used by the Connect screen).
+- 2026-10-03 [S2] Router: URLs are `#/<viewId>/<param>/...?query`; views get `ctx = {id, params, query, navigate, container}`. `registerView` may be called again with the same id to replace a view.
+- 2026-10-03 [S2] Data rows: client normalizes rows from the server (json/files fields parsed from text to arrays/objects, `num` to numbers, `bool` to 0/1). Views always see real arrays/objects. On push the client sends real arrays/objects, so S1's server must stringify json/files fields when writing the Sheet and the pull may return either form.
+- 2026-10-03 [S2] Sync order is hooks (queued file uploads), then push, then pull; the `rev` cursor only moves from pull results. Offline uploads get ids like `pending-<uuid>` which are swapped for real ids in referencing rows on the next sync (needs the file fields listed in `js/core/schema.js`).
+- 2026-10-03 [S2] GitHub Pages route: `tools/deploy-pages.ps1` force-pushes a copy of `web/` (without `web/dev`) to the `gh-pages` branch; Pages is set to that branch. Reason: Pages can only serve the repo root or /docs, not /web.
+- 2026-10-03 [S2] Extra exports beyond CONTRACT section 8: `HB.init`, `HB.onStatus`, `HB.addSyncHook`, `HB.newId`, `HB.reconfigure`; `status()` also returns `error` and `authFailed`; ui exports `openModal`, `confirmBtn`, `money`, `fmtDate`, `todayISO`; form field types: text, textarea, date, time, number, select, bool, ref, files, file, json-list.
+
 ## Contract requests
 
 ## Cross-stream requests
+- 2026-10-03 [S2] To S1: confirm how the server returns `json`/`files`/`bool` columns on pull (text vs parsed). The client accepts both. Also the client sends `updatedAt` as a number and never sends `rev` meaningfully.
