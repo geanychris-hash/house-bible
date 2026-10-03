@@ -387,3 +387,27 @@ test('upload validation (no Drive in Node): bad kind and oversize are rejected',
   assert.equal(call({ action: 'upload', name: 'a.jpg', parentKind: 'rooms' }).error, 'bad_request');
   assert.equal(call({ action: 'upload', name: 'a.jpg', mime: 'x', parentKind: 'rooms', dataBase64: 'A'.repeat(28 * 1024 * 1024) }).error, 'too_large');
 });
+
+test('history returns changelog newest first, filters by table and id, honours limit', () => {
+  const { call } = fresh();
+  const a = room({ updatedAt: 1 }), b = room({ updatedAt: 1 });
+  call({ action: 'push', changes: [{ table: 'rooms', row: a }, { table: 'rooms', row: b }] });
+  call({ action: 'push', changes: [{ table: 'rooms', row: { ...a, name: 'X', updatedAt: 5 } }] });
+  const all = call({ action: 'history' });
+  assert.equal(all.ok, true);
+  eq(all.entries.map((e) => e.rev), [3, 2, 1]);
+  eq(all.entries[0], { rev: 3, table: 'rooms', id: a.id, updatedBy: 'test', at: all.entries[0].at });
+  assert.equal(call({ action: 'history', limit: 1 }).entries.length, 1);
+  eq(call({ action: 'history', id: a.id }).entries.map((e) => e.rev), [3, 1]);
+  assert.equal(call({ action: 'history', table: 'tasks' }).entries.length, 0);
+  assert.equal(call({ action: 'history', table: 'nope' }).error, 'bad_request');
+});
+
+test('v3 columns exist', () => {
+  const json = JSON.parse(readFileSync(join(here, '..', 'schema.json'), 'utf8'));
+  const names = (t) => json.tables[t].fields.map((f) => f.name);
+  assert.ok(names('task_log').includes('contact') && names('expenses').includes('contact'));
+  for (const c of ['expected_life_years', 'replace_cost', 'purchase_price', 'purchase_date', 'replacement_value']) assert.ok(names('assets').includes(c), c);
+  assert.ok(names('tools').includes('lent_to') && names('tools').includes('location') && names('utilities').includes('hdd'));
+  assert.ok(json.tables.assets.fields.find((f) => f.name === 'kind').enum.includes('belonging'));
+});

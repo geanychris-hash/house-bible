@@ -74,7 +74,8 @@ var HB_SCHEMA = {
             "system",
             "appliance",
             "fixture",
-            "other"
+            "other",
+            "belonging"
           ]
         },
         {
@@ -125,6 +126,26 @@ var HB_SCHEMA = {
         {
           "name": "docs",
           "type": "json"
+        },
+        {
+          "name": "expected_life_years",
+          "type": "num"
+        },
+        {
+          "name": "replace_cost",
+          "type": "num"
+        },
+        {
+          "name": "purchase_price",
+          "type": "num"
+        },
+        {
+          "name": "purchase_date",
+          "type": "date"
+        },
+        {
+          "name": "replacement_value",
+          "type": "num"
         }
       ]
     },
@@ -277,6 +298,11 @@ var HB_SCHEMA = {
         {
           "name": "photos",
           "type": "files"
+        },
+        {
+          "name": "contact",
+          "type": "ref",
+          "ref": "contacts"
         }
       ]
     },
@@ -602,6 +628,11 @@ var HB_SCHEMA = {
         {
           "name": "notes",
           "type": "text"
+        },
+        {
+          "name": "contact",
+          "type": "ref",
+          "ref": "contacts"
         }
       ]
     },
@@ -633,6 +664,14 @@ var HB_SCHEMA = {
         },
         {
           "name": "notes",
+          "type": "text"
+        },
+        {
+          "name": "location",
+          "type": "text"
+        },
+        {
+          "name": "lent_to",
           "type": "text"
         }
       ]
@@ -669,6 +708,10 @@ var HB_SCHEMA = {
         {
           "name": "notes",
           "type": "text"
+        },
+        {
+          "name": "hdd",
+          "type": "num"
         }
       ]
     },

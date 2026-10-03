@@ -77,7 +77,8 @@ var HB_SCHEMA = {
             "system",
             "appliance",
             "fixture",
-            "other"
+            "other",
+            "belonging"
           ]
         },
         {
@@ -128,6 +129,26 @@ var HB_SCHEMA = {
         {
           "name": "docs",
           "type": "json"
+        },
+        {
+          "name": "expected_life_years",
+          "type": "num"
+        },
+        {
+          "name": "replace_cost",
+          "type": "num"
+        },
+        {
+          "name": "purchase_price",
+          "type": "num"
+        },
+        {
+          "name": "purchase_date",
+          "type": "date"
+        },
+        {
+          "name": "replacement_value",
+          "type": "num"
         }
       ]
     },
@@ -280,6 +301,11 @@ var HB_SCHEMA = {
         {
           "name": "photos",
           "type": "files"
+        },
+        {
+          "name": "contact",
+          "type": "ref",
+          "ref": "contacts"
         }
       ]
     },
@@ -605,6 +631,11 @@ var HB_SCHEMA = {
         {
           "name": "notes",
           "type": "text"
+        },
+        {
+          "name": "contact",
+          "type": "ref",
+          "ref": "contacts"
         }
       ]
     },
@@ -636,6 +667,14 @@ var HB_SCHEMA = {
         },
         {
           "name": "notes",
+          "type": "text"
+        },
+        {
+          "name": "location",
+          "type": "text"
+        },
+        {
+          "name": "lent_to",
           "type": "text"
         }
       ]
@@ -672,6 +711,10 @@ var HB_SCHEMA = {
         {
           "name": "notes",
           "type": "text"
+        },
+        {
+          "name": "hdd",
+          "type": "num"
         }
       ]
     },
@@ -1591,8 +1634,32 @@ function route_(req) {
     case 'thumb': return apiThumb_(req);
     case 'syncCalendar': return withLock_(apiSyncCalendar_);
     case 'testAlert': return apiTestAlert_();
+    case 'history': return apiHistory_(req);
     default: return err_('bad_request', 'Unknown action');
   }
+}
+
+/* history {limit, table?, id?}: newest-first slice of the changelog tab. */
+function apiHistory_(req) {
+  var limit = Math.floor(Number(req.limit || 100));
+  if (!isFinite(limit) || limit < 1) limit = 100;
+  if (limit > 500) limit = 500;
+  var table = req.table ? String(req.table) : '';
+  if (table && tableNames_().indexOf(table) < 0) return err_('bad_request', 'Unknown table');
+  var id = req.id ? String(req.id) : '';
+  var sheet = getSS_().getSheetByName(CHANGELOG_TAB);
+  var n = sheet ? sheet.getLastRow() - 1 : 0;
+  var entries = [];
+  if (n > 0) {
+    var vals = sheet.getRange(2, 1, n, CHANGELOG_COLS.length).getValues();
+    for (var i = vals.length - 1; i >= 0 && entries.length < limit; i--) {
+      var v = vals[i];
+      if (table && v[1] !== table) continue;
+      if (id && String(v[2]) !== id) continue;
+      entries.push({ rev: Number(v[0]), table: v[1], id: String(v[2]), updatedBy: v[3], at: Number(v[4]) || v[4] });
+    }
+  }
+  return { ok: true, entries: entries };
 }
 
 function apiPull_(req) {
