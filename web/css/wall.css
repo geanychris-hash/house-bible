@@ -1,0 +1,43 @@
+/* Wall display (#/wall). Read-only, large type. body.wall-mode hides the app chrome while the view is mounted. */
+body.wall-mode { padding: 0; min-width: 0; }
+body.wall-mode .top, body.wall-mode .nav, body.wall-mode .moresheet, body.wall-mode .skip { display: none; }
+body.wall-mode .app { display: block; max-width: none; margin: 0; }
+body.wall-mode main { display: block; }
+
+.wl-root { --wl-base: clamp(16px, 1.45vw, 30px); min-height: 100vh; padding: clamp(12px, 2vw, 40px); font-size: var(--wl-base); line-height: 1.25; }
+.wl-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: clamp(12px, 1.6vw, 32px); }
+.wl-date { font-family: var(--display); font-weight: 700; font-size: 2.6em; line-height: 1; }
+.wl-brand { font-family: var(--mono); font-size: .6em; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-top: .4em; }
+.wl-clock { font-family: var(--display); font-weight: 600; font-size: 2.6em; line-height: 1; color: var(--accent); margin-left: auto; }
+.wl-exit { font-size: .55em; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; opacity: .6; }
+.wl-exit:hover, .wl-exit:focus-visible { opacity: 1; }
+
+.wl-grid { display: grid; gap: clamp(10px, 1.4vw, 28px); grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "today over low" "soon soon alerts"; }
+.wl-today { grid-area: today; } .wl-over { grid-area: over; } .wl-low { grid-area: low; }
+.wl-soon { grid-area: soon; } .wl-alerts { grid-area: alerts; }
+.wl-sec { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1em 1.1em; min-width: 0; }
+.wl-sec h2 { font-size: 1.7em; display: flex; align-items: baseline; gap: .5em; margin-bottom: .5em; }
+.wl-count { font-family: var(--mono); font-size: .6em; font-weight: 500; color: var(--muted); }
+.wl-hot { border-color: var(--bad); background: var(--bad-bg); }
+.wl-hot h2 { color: var(--bad); }
+
+.wl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .45em; }
+.wl-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em .6em; font-size: 1.25em; font-weight: 500; }
+.wl-list.wl-small li { font-size: 1em; }
+.wl-t { overflow-wrap: anywhere; }
+.wl-tag { font-family: var(--mono); font-size: .6em; font-weight: 400; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+.wl-late { color: var(--bad); border-color: var(--bad); }
+.wl-empty { color: var(--muted); font-size: 1.05em; margin: 0; }
+.wl-note { color: var(--muted); font-size: .8em; margin: .7em 0 0; }
+
+.wl-days { display: grid; grid-template-columns: repeat(auto-fit, minmax(10em, 1fr)); gap: 1em; }
+.wl-day h3 { font-size: 1.1em; color: var(--accent); margin-bottom: .4em; display: flex; justify-content: space-between; gap: .5em; }
+.wl-day h3 small { font-family: var(--mono); font-size: .75em; color: var(--muted); letter-spacing: 0; text-transform: none; font-weight: 400; }
+.wl-day ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .35em; font-size: 1.05em; }
+
+@media (max-width: 899px) {
+  .wl-grid { grid-template-columns: 1fr; grid-template-areas: "over" "today" "low" "alerts" "soon"; }
+  .wl-date, .wl-clock { font-size: 1.8em; }
+  .wl-head { flex-wrap: wrap; }
+  .wl-list li { font-size: 1.1em; }
+}

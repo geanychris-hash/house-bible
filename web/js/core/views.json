@@ -26,6 +26,7 @@
  "rooms",
  "sensitive-crypto",
  "sensitive",
+ "service-logic",
  "settings",
  "shutoffs",
  "steam",
@@ -33,5 +34,6 @@
  "utilities",
  "visuals-logic",
  "visuals",
+ "wall",
  "weather-alerts"
 ]

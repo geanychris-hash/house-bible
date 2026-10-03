@@ -2,13 +2,14 @@
    Network-first for everything on this site, with the cache as the offline fallback. All paths are
    relative so it works from https://<user>.github.io/<repo>/. Bump VERSION when this file's logic
    changes; the shell files themselves are refreshed on every online load, so they do not need a bump. */
-const VERSION = 'hb2-3';
+const VERSION = 'hb2-4';
 const CACHE = 'house-bible-' + VERSION;
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/tokens.css', 'css/base.css', 'css/search.css',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
   'js/core/app.js', 'js/core/router.js', 'js/core/data.js', 'js/core/store.js', 'js/core/schema.js', 'js/core/api.js',
   'js/core/auth.js', 'js/core/files.js', 'js/core/ui.js', 'js/core/connect.js', 'js/core/home.js', 'js/core/icons.js', 'js/core/search.js', 'js/core/views.json',
+  'js/views/wall.js', 'css/wall.css',
 ];
 
 self.addEventListener('install', e => {
