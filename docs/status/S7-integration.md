@@ -15,3 +15,6 @@ Branch `integration`, merged into `main`. All of s1 through s6 merged; doc confl
 - Only the data layer was driven for most tables; edit and delete through each view's own UI were not clicked through except contacts add.
 - GitHub Pages deploy (`tools/deploy-pages.ps1`) not run. Dark mode not eyeballed.
 - `views.json` lists helper modules (e.g. `home-logic`) as views; harmless, they register nothing.
+
+## Live backend check (2026-10-03, after Chris deployed via clasp)
+Verified against the real Apps Script web app from the app running on localhost (headless Chrome): ping, wrong key rejected (`auth`), push/pull, soft delete, file upload and thumbnail, `syncCalendar` (0 events, as no task has calendar on), `testAlert` (server reported 1 email sent; arrival in the inbox not confirmed by Chris). CORS from the app origin works (text/plain POST). Seed (43 tasks) and receipts (28 tools, 113 expenses, 6 projects, 1 room) loaded. All 20 views render at 400 and 1200 px with no console errors; sync reaches Online. Still NOT verified: real phones, install, camera, calendar events actually appearing, email arrival, GitHub Pages origin, wife's device.
