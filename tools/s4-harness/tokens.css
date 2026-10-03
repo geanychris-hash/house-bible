@@ -1,0 +1,43 @@
+/* Layout: left rail nav on wide screens, bottom tab bar on phones. Drafting-table look: hairline panels, blueprint grid ground,
+   copper for heat, steam-blue for water, mono labels like a title block. */
+:root {
+  --bg: #e8ecee;
+  --grid: rgba(16, 32, 42, .045);
+  --surface: #f8fafb;
+  --surface-2: #eef2f4;
+  --ink: #10202a;
+  --muted: #566871;
+  --line: #c9d3d8;
+  --accent: #0f6a78;
+  --accent-ink: #ffffff;
+  --accent-soft: #d6eaed;
+  --heat: #b4531f;
+  --cool: #2a6fb0;
+  --warn: #8a5200;
+  --warn-bg: #fbecd0;
+  --bad: #a22a2a;
+  --bad-bg: #f8dddd;
+  --good: #1d6a39;
+  --good-bg: #dcefe1;
+  --k-shut: #a22a2a; --k-sys: #0f6a78; --k-rad: #b4531f; --k-app: #2a6fb0; --k-paint: #7a4aa8; --k-proj: #8a5200;
+  --shadow: 0 1px 2px rgba(16, 32, 42, .08);
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1317; --grid: rgba(160, 200, 215, .05); --surface: #131e24; --surface-2: #1a272e; --ink: #e4edf0; --muted: #94a7ae;
+    --line: #2b3b43; --accent: #52c1cc; --accent-ink: #062a2e; --accent-soft: #19373c; --heat: #f0955c; --cool: #6fb2ee;
+    --warn: #e3ad55; --warn-bg: #3a2e14; --bad: #f09090; --bad-bg: #3d1e1e; --good: #82d39e; --good-bg: #183222;
+    --k-shut: #f09090; --k-sys: #52c1cc; --k-rad: #f0955c; --k-app: #6fb2ee; --k-paint: #c3a0ee; --k-proj: #e3ad55;
+    --shadow: none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1317; --grid: rgba(160, 200, 215, .05); --surface: #131e24; --surface-2: #1a272e; --ink: #e4edf0; --muted: #94a7ae;
+  --line: #2b3b43; --accent: #52c1cc; --accent-ink: #062a2e; --accent-soft: #19373c; --heat: #f0955c; --cool: #6fb2ee;
+  --warn: #e3ad55; --warn-bg: #3a2e14; --bad: #f09090; --bad-bg: #3d1e1e; --good: #82d39e; --good-bg: #183222;
+  --k-shut: #f09090; --k-sys: #52c1cc; --k-rad: #f0955c; --k-app: #6fb2ee; --k-paint: #c3a0ee; --k-proj: #e3ad55;
+  --shadow: none; color-scheme: dark;
+}
