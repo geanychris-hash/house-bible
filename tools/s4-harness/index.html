@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S4 harness</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,sans-serif;padding:12px 16px 40px}
+ nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+ nav a{padding:10px 12px;border:1px solid var(--line);border-radius:8px;text-decoration:none;color:var(--ink);background:var(--surface)}
+ nav a.on{background:var(--accent);color:var(--accent-ink)}
+ h1,h2,h3{font-family:var(--display)}
+ #app{max-width:1100px;margin:0 auto}
+</style>
+<script type="importmap">{"imports":{"../../web/js/core/router.js":"./router-stub.js"}}</script>
+</head><body><div id="app"><nav id="nav"></nav><main id="main"></main></div>
+<script type="module">
+import { views } from './router-stub.js';
+const ALIAS = { room:'rooms', asset:'assets', document:'documents', shutoff:'shutoffs', contact:'contacts' };
+const names = ['documents','rooms','assets','shutoffs','contacts','steam','sensitive','qr'];
+for (const n of names) await import(`../../web/js/views/${n}.js`).catch(e => console.error('load fail', n, e));
+let cleanup = null, current = null;
+function show() {
+  let id = (location.hash.replace(/^#\/?/, '').split(/[/?]/)[0]) || 'documents';
+  id = ALIAS[id] || id;
+  const v = views.find(x => x.id === id) || views[0];
+  const nav = document.getElementById('nav');
+  nav.replaceChildren(...views.map(x => Object.assign(document.createElement('a'), { href: '#/' + x.id, textContent: x.title, className: x.id === v.id ? 'on' : '' })));
+  if (current !== v.id) { cleanup && cleanup(); current = v.id; cleanup = v.render(document.getElementById('main'), {}); }
+}
+window.addEventListener('hashchange', show); window.addEventListener('hb-views', show); show();
+</script></body></html>

@@ -1,0 +1,15 @@
+/* QR labels */
+.rec-labels { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.rec-label { border: 1px dashed var(--line, #c9d3d8); border-radius: 6px; padding: 8px; display: grid; gap: 4px; justify-items: center; text-align: center; background: #fff; color: #000; break-inside: avoid; page-break-inside: avoid; }
+.rec-label svg { width: 100%; max-width: 150px; height: auto; }
+.rec-label-text { display: grid; gap: 2px; font-size: 13px; overflow-wrap: anywhere; }
+.rec-label-text span { font-size: 11px; color: #333; }
+.rec-qr .rec-item input[type=checkbox] { width: 22px; height: 22px; flex: none; }
+.rec-print-root { display: none; }
+@media print {
+  body.rec-printing > *:not(.rec-print-root) { display: none !important; }
+  body.rec-printing .rec-print-root { display: block !important; }
+  body.rec-printing { background: #fff !important; padding: 0 !important; }
+  .rec-print-root .rec-labels { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .rec-print-root .rec-label { border: 1px solid #999; }
+}

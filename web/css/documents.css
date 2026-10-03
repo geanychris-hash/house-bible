@@ -1,0 +1,4 @@
+/* Documents vault */
+.rec-doc-preview { display: flex; justify-content: center; }
+.rec-thumb.rec-bigthumb { width: 100%; max-width: 360px; height: 240px; }
+.rec-bigthumb img { object-fit: contain; background: var(--surface-2, #eef2f4); }
