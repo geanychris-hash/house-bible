@@ -6,6 +6,7 @@ import { start, loadViews, listViews, onViewsChanged, onRoute, setGuard, navigat
 import { registerConnect, captureSetupLink } from './connect.js';
 import { registerHomePlaceholder } from './home.js';
 import { iconSvg } from './icons.js';
+import { initSearch } from './search.js';
 
 const PHONE_SLOTS = 4;          // tabs shown in the bottom bar on phones; the rest go under "More"
 const nav = document.getElementById('nav');
@@ -89,6 +90,7 @@ async function boot() {
   start(main);
   drawChip();
   HB.startAutoSync();
+  initSearch().catch(e => console.warn('search not started:', e && e.message));
   loadViews();
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     navigator.serviceWorker.register('sw.js').catch(e => console.warn('service worker not registered:', e && e.message));
