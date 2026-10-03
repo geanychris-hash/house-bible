@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>House Bible</title>
+<meta name="description" content="House reference, upkeep schedule and records for 353 Washington St.">
+<meta name="theme-color" content="#0f6a78">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="House Bible">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="app">
+  <header class="top">
+    <div class="brand">House Bible <small>353 Washington St</small></div>
+    <div class="top-tools">
+      <button id="searchbtn" class="btn small" type="button" aria-label="Search (press / or Ctrl+K)" title="Search ( / or Ctrl+K )">Search</button>
+      <button id="syncchip" class="chip" type="button" aria-live="polite">Starting...</button>
+      <button id="syncbtn" class="btn small" type="button">Sync</button>
+    </div>
+  </header>
+  <nav id="nav" class="nav" aria-label="Main"></nav>
+  <main id="main" tabindex="-1" aria-busy="true"><noscript><div class="panel">House Bible needs JavaScript turned on.</div></noscript></main>
+</div>
+<script type="module" src="js/core/app.js"></script>
+</body>
+</html>
