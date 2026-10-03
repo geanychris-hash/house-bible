@@ -183,3 +183,49 @@ export function matchAssetCost(asset, expenses) {
   const hits = expenses.filter(e => { const i = cleanName(e.item); return i && (i.includes(n) || n.includes(i)); }).sort((a, b) => num0(b.amount) - num0(a.amount));
   return hits[0] || null;
 }
+
+/* ---------- lifespan forecast and insurance values (G3) ---------- */
+/* install_date is free text for old houses ("circa 1998", "2004-06"). Take the first plausible 4-digit year. */
+export function installYear(text) {
+  const m = /(?:^|\D)(1[6-9]\d\d|20\d\d)(?!\d)/.exec(String(text ?? ''));
+  return m ? Number(m[1]) : null;
+}
+/* One asset's place in the forecast. life must be a positive number; zero or blank counts as not set. */
+export function lifespanInfo(asset, nowYear) {
+  const life = toNum(asset.expected_life_years);
+  const year = installYear(asset.install_date);
+  if (life == null || life <= 0) return { status: 'no-life' };
+  if (year == null) return { status: 'no-year', life };
+  const dueYear = year + life, remaining = dueYear - nowYear;
+  return { status: 'ok', life, year, dueYear, remaining, past: remaining < 0, flag: remaining <= 3 };
+}
+/* Rows sorted soonest first (past due at the top). missing = assets with a life set but no usable install year.
+   reserve = yearly saving to cover the flagged-or-not rows that have a replace_cost: cost / max(remaining, 1). */
+export function lifespanForecast(assets, nowYear = new Date().getFullYear()) {
+  const rows = [], missing = [];
+  assets.filter(a => !isOn(a.deleted)).forEach(a => {
+    const i = lifespanInfo(a, nowYear);
+    if (i.status === 'no-year') missing.push({ asset: a, life: i.life });
+    else if (i.status === 'ok') {
+      const cost = toNum(a.replace_cost);
+      rows.push({ asset: a, ...i, cost: cost != null && cost > 0 ? cost : null, perYear: cost != null && cost > 0 ? cost / Math.max(i.remaining, 1) : null });
+    }
+  });
+  rows.sort((a, b) => a.remaining - b.remaining || String(a.asset.name || '').localeCompare(String(b.asset.name || '')));
+  const reserve = rows.reduce((s, r) => s + (r.perYear || 0), 0);
+  return { rows, missing, reserve, flagged: rows.filter(r => r.flag).length, pastDue: rows.filter(r => r.past).length };
+}
+/* Insured value of one asset: replacement_value, then purchase_price, then the matching expense. */
+export function insuranceValue(asset, expenses = []) {
+  const rep = toNum(asset.replacement_value), buy = toNum(asset.purchase_price);
+  if (rep != null && rep > 0) return { value: rep, source: 'replacement' };
+  if (buy != null && buy > 0) return { value: buy, source: 'purchase' };
+  const hit = matchAssetCost(asset, expenses), amt = hit ? toNum(hit.amount) : null;
+  if (amt != null && amt > 0) return { value: amt, source: 'expense' };
+  return { value: null, source: null };
+}
+export function insuranceInventory(assets, expenses = []) {
+  const rows = assets.filter(a => !isOn(a.deleted)).map(a => ({ asset: a, ...insuranceValue(a, expenses) }))
+    .sort((a, b) => String(a.asset.name || '').localeCompare(String(b.asset.name || '')));
+  return { rows, total: rows.reduce((s, r) => s + (r.value || 0), 0), unvalued: rows.filter(r => r.value == null).length };
+}
