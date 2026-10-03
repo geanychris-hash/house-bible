@@ -4,3 +4,4 @@ config.local.*
 .env
 web/dev/data.json
 web/dev/files/
+.clasp.json
