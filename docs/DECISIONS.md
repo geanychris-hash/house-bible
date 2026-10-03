@@ -40,3 +40,39 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [S1] `file` and `thumb` serve only files inside the House Bible Files folders, so the key cannot read the rest of Chris's Drive. The monthly backup sends backups beyond the newest 12 to Drive trash (recoverable); that is the only removal the backend does.
 - 2026-10-03 [S1] Key setup: the Apps Script editor cannot pass arguments, so Chris edits the string in `runSetKey()`, runs it, and reverts the text. Only the SHA-256 hash is stored. Unset key and wrong key both return plain `{ok:false,error:"auth"}`.
 - 2026-10-03 [S1] The script lock helper is re-entrant within one execution. The first version deadlocked calendar sync against its own settings write; the Node tests caught it.
+# Decisions log
+
+Append one dated line per decision. Never edit other people's lines. Format: `- YYYY-MM-DD [stream] decision, reason.`
+
+## Chris's decisions (from the questions file, 2026-10-03)
+- 2026-10-03 [Chris] Backend: Google Sheet + Apps Script + Drive, chosen over Firebase. Reason: Firebase file storage may need a paid plan, still needs console setup, and the Sheet is openable and fixable by hand. Chris's condition was "free, as usable, minimal human setup"; the Sheet route meets all three.
+- 2026-10-03 [Chris] Users: Chris and his wife, both editing. Devices: Windows PCs, Samsung phone, iPhone.
+- 2026-10-03 [Chris] Offline: online is required, offline edits are a nice extra if easy. Treat as: read from local cache offline, queue edits, sync later.
+- 2026-10-03 [Chris] Priorities: 1 maintenance scheduling, 2 documents vault, 3 room records.
+- 2026-10-03 [Chris] Must-haves: documents vault, contacts, consumables, steam log, room records, weather nudges, and any user-defined recurring tasks (example: dog heartworm medicine every 30 days).
+- 2026-10-03 [Chris] Nice-to-haves: expense ledger, utilities and fuel log, insurance inventory, warranty tracker, QR labels, improvement cost tally.
+- 2026-10-03 [Chris] Not wanted: weekly digest email.
+- 2026-10-03 [Chris] Reminders: Google Calendar events. Email only for weather alerts (the default said calendar plus weekly email, but he rejected the weekly digest; weather alerts are a Must, so email is kept for those).
+- 2026-10-03 [Chris] Sensitive data: some will be stored, must be protected. Access: private link plus a shared key per device on top of Google account access.
+- 2026-10-03 [Chris] Public GitHub repo for code is fine. He needs to create a GitHub account.
+- 2026-10-03 [Chris] Starting data: start fresh; import the receipts file only (28 tools, 2 paint entries); all "project clues" in the Receipts note are real projects. Files, photos and manuals are not gathered yet.
+- 2026-10-03 [Chris] Time: about 2 hours per day for Google steps and testing; deadline a few days; up to 4 sessions at once.
+- 2026-10-03 [Chris] Ambiguity during a build: pick a sensible default, record it here, keep going.
+
+## Interpretations Claude made (Chris can overrule)
+- 2026-10-03 [Claude] Chris struck through "Decorative charts" in the cut list. The instruction was "cross out any you want to keep", so the decorative charts are KEPT (year wheel, house cutaway, flow graph) along with the steam diagram. Everything else listed (barcode/OCR, Find a tool catalog, cut-list optimizer, Tasker CSV, Obsidian zip) is CUT. Visuals are lowest priority (S6, last).
+- 2026-10-03 [Claude] Sensitive data uses client-side encryption with a household passphrase (CONTRACT section 7), so the Sheet only holds ciphertext.
+- 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
+
+- 2026-10-03 [S2] View loading: the app reads `web/js/core/views.json` (a list of file names in `web/js/views/`) and dynamically imports each one, skipping failures. Reason: a plain import of a missing file puts a 404 in the console. `node web/dev/gen-views.mjs` writes the file; the mock server computes it live; `tools/deploy-pages.ps1` runs it. Integration must run it (or deploy) after merging view branches; the committed copy is `[]`.
+- 2026-10-03 [S2] Nav: first 4 views by `order` show in the phone tab bar, the rest under "More"; all show in the side nav on wide screens. A view with id `home` replaces the placeholder Home. `hidden:true` keeps a view out of the nav (used by the Connect screen).
+- 2026-10-03 [S2] Router: URLs are `#/<viewId>/<param>/...?query`; views get `ctx = {id, params, query, navigate, container}`. `registerView` may be called again with the same id to replace a view.
+- 2026-10-03 [S2] Data rows: client normalizes rows from the server (json/files fields parsed from text to arrays/objects, `num` to numbers, `bool` to 0/1). Views always see real arrays/objects. On push the client sends real arrays/objects, so S1's server must stringify json/files fields when writing the Sheet and the pull may return either form.
+- 2026-10-03 [S2] Sync order is hooks (queued file uploads), then push, then pull; the `rev` cursor only moves from pull results. Offline uploads get ids like `pending-<uuid>` which are swapped for real ids in referencing rows on the next sync (needs the file fields listed in `js/core/schema.js`).
+- 2026-10-03 [S2] GitHub Pages route: `tools/deploy-pages.ps1` force-pushes a copy of `web/` (without `web/dev`) to the `gh-pages` branch; Pages is set to that branch. Reason: Pages can only serve the repo root or /docs, not /web.
+- 2026-10-03 [S2] Extra exports beyond CONTRACT section 8: `HB.init`, `HB.onStatus`, `HB.addSyncHook`, `HB.newId`, `HB.reconfigure`; `status()` also returns `error` and `authFailed`; ui exports `openModal`, `confirmBtn`, `money`, `fmtDate`, `todayISO`; form field types: text, textarea, date, time, number, select, bool, ref, files, file, json-list.
+
+## Contract requests
+
+## Cross-stream requests
+- 2026-10-03 [S2] To S1: confirm how the server returns `json`/`files`/`bool` columns on pull (text vs parsed). The client accepts both. Also the client sends `updatedAt` as a number and never sends `rev` meaningfully.
