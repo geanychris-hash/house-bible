@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S3 harness</title>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:var(--bg,#e8ecee)}@media(prefers-color-scheme:dark){body{background:#0b1317;color:#e4edf0}}nav.h{display:flex;gap:12px;padding:8px 16px;background:#0f6a78}nav.h a{color:#fff;min-height:44px;display:inline-flex;align-items:center}</style>
+<script>
+  // map S2's router (not present in this worktree) to the stub
+  const base = location.origin + '/web/js/core/router.js';
+  document.write('<script type="importmap">' + JSON.stringify({ imports: { [base]: location.origin + '/tools/s3-harness/router-stub.js' } }) + '<\/script>');
+</script></head>
+<body>
+<nav class="h"><a href="#/maintenance">Maintenance</a><a href="#/consumables">Supplies</a><a href="#/weather-alerts">Weather</a></nav>
+<main id="app"></main>
+<script type="module">
+  import { views } from './router-stub.js';
+  import * as HB from '../../web/js/core/data.js';
+  const seeded = new URLSearchParams(location.search).get('empty') === '1';
+  const fresh = new URLSearchParams(location.search).get('fresh') !== '0';
+  if (fresh) localStorage.removeItem('hb.stub.v1');
+  window.HB = HB;
+  await import('../../web/js/views/maintenance.js');
+  await import('../../web/js/views/consumables.js');
+  await import('../../web/js/views/weather-alerts.js');
+  if (!seeded && fresh) {
+    const seed = await (await fetch('../../seed/tasks.json')).json();
+    for (const t of seed) await HB.save('tasks', { ...t, rule: JSON.stringify(t.rule) });
+    await HB.save('rooms', { id: 'r1', name: 'Kitchen' });
+    await HB.save('tasks', { title: 'Dog heartworm pill', category: 'pet', subject: 'Rex', rule: JSON.stringify({ type: 'days', interval: 30 }), start: new Date(Date.now() - 33 * 864e5).toISOString().slice(0, 10), assignee: 'Chris', active: 1, source: 'user', pro_only: 0, calendar: 1 });
+    await HB.save('consumables', { name: 'Range hood filter', spec: '30 in aluminum mesh', qty_on_hand: 0, interval_days: 90, last_replaced: '2026-06-01' });
+    await HB.save('consumables', { name: 'Water filter cartridge', spec: 'GE FXHTC', qty_on_hand: 2, interval_days: 180, last_replaced: new Date().toISOString().slice(0, 10) });
+  }
+  let cleanup;
+  const app = document.getElementById('app');
+  const show = () => { cleanup && cleanup(); const id = location.hash.replace('#/', '') || 'maintenance'; const v = views.get(id); cleanup = v.render(app, {}); };
+  addEventListener('hashchange', show); show();
+</script></body></html>

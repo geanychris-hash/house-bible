@@ -76,3 +76,18 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 
 ## Cross-stream requests
 - 2026-10-03 [S2] To S1: confirm how the server returns `json`/`files`/`bool` columns on pull (text vs parsed). The client accepts both. Also the client sends `updatedAt` as a number and never sends `rev` meaningfully.
+
+## S3 Maintenance decisions and requests
+- 2026-10-03 [S3] Skip and snooze are stored as `task_log` rows because the schema has no kind column: note `[skipped] reason` (counts as done) and `[snoozed until YYYY-MM-DD] reason` (only defers the due date; a later completion cancels it). Helpers: `makeLogNote`, `logKind` in recur.js. Reason: no contract change needed.
+- 2026-10-03 [S3] Anchored rules (yearly, monthly, weekly, days) stay on the `start` schedule when done late; `after_done` shifts. A completion also counts for the next occurrence if done up to min(45, half the period) days early. One completion clears all missed past occurrences. Reason: heartworm "every 30 days" should not pile up five overdue pills.
+- 2026-10-03 [S3] Extension to CONTRACT section 5 (backward compatible): weekly, monthly and days rules accept optional `from` and `to` ("MM-DD") to limit occurrences to part of the year (e.g. weekly boiler water check only Oct 15 to Apr 30). Other code that ignores the keys just sees a normal rule.
+- 2026-10-03 [S3] Feb 29 yearly tasks fall on Feb 28 in common years. Monthly dates clamp to month end without drifting (Jan 31, Feb 28, Mar 31).
+- 2026-10-03 [S3] A missed seasonal window stays "overdue" for 60 days after it ends, then rolls to next year's window.
+- 2026-10-03 [S3] `tasks.rule` and `task_log.photos` are saved as JSON strings (matches the Sheet's json type); readers accept string or object.
+- 2026-10-03 [S3] The S3 views use their own small helpers (`maintenance-ui.js`: h, modal, toast) instead of S2's `ui.js`, so they work without S2. They use S2 CSS tokens (`--bg --surface --ink --muted --line --accent ...`) with built-in fallbacks and a dark-mode fallback. Integration can swap to HBui later if wanted.
+- 2026-10-03 [S3] Seed: 43 tasks, all `source:"seed"`, no pet reminders. Gas/flue/main electrical/asbestos/lead items are `pro_only:1` with "licensed pro" text. The boiler low-water cut-off blow-down defaults to monthly in heating season (manufacturers differ: monthly or weekly); the task text tells the owner to use the interval in their own manual.
+- 2026-10-03 [S3] Views register as `maintenance` (order 10), `consumables` (12), `weather-alerts` (14). Calendar is a List/Calendar toggle inside Maintenance.
+- 2026-10-03 [S3] CROSS-STREAM REQUEST to S2 (`web/js/core/data.js`): export `api(action, extra)` returning the parsed JSON response of an Apps Script action using the stored URL, key and device. S3 calls it for `testAlert` and `syncCalendar` (looked up as `HB.api` or `HB.callApi`; shows "Not connected yet" if missing).
+- 2026-10-03 [S3] CROSS-STREAM REQUEST to S2: `HB.deviceLabel()` (optional) returning the device label so `task_log.by` is filled; S3 falls back to localStorage `hb.device` or blank.
+- 2026-10-03 [S3] CROSS-STREAM REQUEST to S2: if the router wants view CSS loaded by itself, say so; S3 views currently inject `css/maintenance.css` themselves via a relative `<link>`.
+- 2026-10-03 [S3] CROSS-STREAM NOTE for S1: `testAlert` must read `settings.notify` where `value` is a JSON string `{"emails":[...]}`; `settings.alerts` value is `{"rules":[...]}`. S3 writes rows with `id` equal to the key.

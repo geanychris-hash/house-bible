@@ -61,3 +61,11 @@ Notes
 - Push notifications are not relied on, especially on iPhone. Reminders come from Google Calendar events and weather alert emails (set up by the backend steps), not from the app.
 - The app works offline from what it last saved. Changes made offline wait on the phone and send themselves the next time it is online and the app is open.
 - Updating the site: run step 5 again. Phones pick up the new version the next time they open the app with a connection (open it twice if it still looks old).
+## S3 Maintenance
+Load the starter tasks (43 house and steam tasks) once the backend is running. About 2 minutes.
+1. Open a terminal in the project folder (the one containing `tools` and `seed`). You need Node installed (nodejs.org, the LTS download).
+2. Test first without changing anything (replace the two values with your Apps Script web app URL and your shared key):
+   `node tools/load-seed.mjs --url "YOUR_URL" --key "YOUR_KEY" --dry-run`
+3. If it says how many tasks it would add, run the same line without `--dry-run`.
+4. Safe to run again later: it skips tasks that are already there and never overwrites your edits.
+5. Open the app, Maintenance. Pet and medicine reminders (like heartworm) are yours to add with "Add recurring thing".
