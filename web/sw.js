@@ -2,7 +2,7 @@
    Network-first for everything on this site, with the cache as the offline fallback. All paths are
    relative so it works from https://<user>.github.io/<repo>/. Bump VERSION when this file's logic
    changes; the shell files themselves are refreshed on every online load, so they do not need a bump. */
-const VERSION = 'hb2-4';
+const VERSION = 'hb2-5';
 const CACHE = 'house-bible-' + VERSION;
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/tokens.css', 'css/base.css', 'css/search.css',

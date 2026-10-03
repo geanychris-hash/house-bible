@@ -26,6 +26,19 @@ export async function markDone(task, { date, note = '', cost = null, photos = []
   return row;
 }
 
+/* Done button: if there are contacts, ask who did it (default "me") before logging; otherwise log instantly. */
+export async function quickDone(task) {
+  const contacts = (await HB.list('contacts')).filter(c => !Number(c.deleted)).sort((a, b) => String(a.name).localeCompare(String(b.name)));
+  if (!contacts.length) return markDone(task);
+  openModal('Mark done', close => {
+    const contact = h('select', { 'aria-label': 'Who did it' }, h('option', { value: '' }, 'Me (did it myself)'),
+      ...contacts.map(c => h('option', { value: c.id }, c.name + (c.trade ? ` (${c.trade})` : ''))));
+    const save = h('button', { type: 'button', class: 'mt-btn mt-btn-primary', onclick: async () => { save.disabled = true; await markDone(task, { contact: contact.value }); close(); } }, 'Done');
+    return h('div', { class: 'mt-form' }, h('p', { class: 'mt-muted' }, task.title), field('Who did it', contact),
+      h('div', { class: 'mt-actions' }, h('button', { type: 'button', class: 'mt-btn', onclick: () => { close(); openDoneDialog(task); } }, 'Add details'), save));
+  });
+}
+
 export function openDoneDialog(task) {
   openModal('Mark done', close => {
     const date = h('input', { type: 'date', value: todayISO(), max: todayISO() });
@@ -121,6 +134,6 @@ export function taskCard(task, st, ctx, { showDone = true } = {}) {
       h('div', { class: 'mt-card-due' }, dueText(st), ' · ', ruleText(task.rule)),
       pro ? h('span', { class: 'mt-badge mt-badge-pro' }, 'Licensed pro') : null),
     showDone && st.state !== 'inactive' && st.state !== 'done'
-      ? h('button', { type: 'button', class: 'mt-btn mt-btn-primary mt-done', 'aria-label': `Mark done: ${task.title}`, onclick: () => markDone(task) }, 'Done')
+      ? h('button', { type: 'button', class: 'mt-btn mt-btn-primary mt-done', 'aria-label': `Mark done: ${task.title}`, onclick: () => quickDone(task) }, 'Done')
       : null);
 }
