@@ -23,5 +23,17 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
 
 ## Contract requests
+- 2026-10-03 [S5] Optional: add `tools` (json array of text) to `projects` so tools needed is not hiding in `parts`. Needs S1 schema.json plus a one-time move of `parts.tools`.
 
 ## Cross-stream requests
+- 2026-10-03 [S5 to S2] ui.js: S5 calls `HBui.openForm({title, fields, values, onSave, onDelete})` where onSave may be async and return false to keep the form open. Field types used: text, textarea, number, date, select (options = string array), and `{type:'ref', table, labelKey?}` (select from a table; labelKey defaults to name, documents use title). onSave receives `{k: value}`; ref value is the row id or empty string. `HBui.toast(msg)` also used.
+- 2026-10-03 [S5 to S2] router.js: S5 views are registered with `registerView` and use `ctx.params?.id` to open a project directly (optional). Print: reports.css rules hide `nav, header.app-header, .app-nav, .bottom-nav, .tabbar` when printing; if the shell uses other names, add `@media print` hide rules for the shell chrome.
+- 2026-10-03 [S5 to S2] css: views load `web/css/projects.css` themselves (link tag added once, relative to the module). It reads tokens --ink, --muted, --line, --surface, --surface-2, --accent, --accent-ink, --accent-soft, --bad, --warn, --good (and -bg variants), with system-colour fallbacks.
+- 2026-10-03 [S5 to S6] `import { importTools } from '../views/tools.js'`; `await importTools([{name, category, status:'own'|'want', brand, model, notes}])` returns `{added, skipped, skippedRows}` and skips rows already present (same name and model).
+- 2026-10-03 [S5] Project "tools needed" has no column in the contract. Stored in `projects.parts` as JSON `{"tools":[...]}` (the cut list is cut, so `parts` was free). Contract request below if S7 prefers a real column.
+- 2026-10-03 [S5] JSON fields (`deps`, `steps`, `parts`, `photos`) are written as stringified JSON per CONTRACT section 3 and read tolerantly (string or already-parsed). Bools are written as 1/0 and read as 1, "1", true.
+- 2026-10-03 [S5] Statuses are lowercase per the contract table (idea, planned, active, done, dropped); done and dropped projects leave sequencing, shopping and tool check. Pro or DIY is the `pro` bool (1 = Pro).
+- 2026-10-03 [S5] Spend per project is the sum of `expenses` rows linked to the project (v1 had a separate purchases list; that is gone).
+- 2026-10-03 [S5] Sequencing now reports real cycles and, separately, projects blocked behind a cycle (v1 lumped them together).
+- 2026-10-03 [S5] Reports: capital-improvement tally counts expenses flagged capital_improvement, plus unflagged-blank expenses on projects flagged capital_improvement. Assets have no value column, so inventory cost is a best-guess match from an expense whose item text contains the asset name.
+- 2026-10-03 [S5] Views register as projects (order 40), expenses (45), tools (46), utilities (47), reports (48). Materials and shopping live inside the Projects view (tabs and detail page) via `views/materials.js`.
