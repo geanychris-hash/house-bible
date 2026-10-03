@@ -227,3 +227,18 @@ export function ruleText(rule) {
     default: return 'One time';
   }
 }
+
+// ---------- consumables (filters, bulbs, batteries) ----------
+/**
+ * {next, days, state, low} for a `consumables` row.
+ * next = last_replaced + interval_days (null if either is missing); state: 'overdue' | 'due' (within 14 days) | 'ok';
+ * low = quantity on hand is zero (only when a quantity was entered).
+ */
+export function consumableStatus(c, today) {
+  const interval = Math.floor(Number(c.interval_days) || 0);
+  const next = interval > 0 && isValid(c.last_replaced) ? addDays(c.last_replaced.slice(0, 10), interval) : null;
+  const days = next ? daysBetween(today, next) : null;
+  const q = c.qty_on_hand;
+  const low = q !== '' && q != null && !isNaN(Number(q)) && Number(q) <= 0;
+  return { next, days, low, state: days == null ? 'ok' : days < 0 ? 'overdue' : days <= 14 ? 'due' : 'ok' };
+}

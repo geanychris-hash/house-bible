@@ -150,3 +150,14 @@ test('season-limited weekly rule skips out-of-season dates', () => {
   assert.equal(nextDue(t, [L('2027-04-24')], '2027-04-25'), '2027-10-16');
   assert.deepEqual(occurrences(t, '2027-04-20', '2027-05-10'), ['2027-04-24']);
 });
+import { consumableStatus } from './recur.js';
+test('consumables: next due, due soon, overdue, low stock', () => {
+  const c = { name: 'Furnace filter', interval_days: 90, last_replaced: '2026-07-01', qty_on_hand: 2 };
+  assert.deepEqual(consumableStatus(c, '2026-08-01'), { next: '2026-09-29', days: 59, low: false, state: 'ok' });
+  assert.equal(consumableStatus(c, '2026-09-20').state, 'due');
+  assert.equal(consumableStatus(c, '2026-10-03').state, 'overdue');
+  assert.equal(consumableStatus({ ...c, qty_on_hand: 0 }, '2026-08-01').low, true);
+  assert.equal(consumableStatus({ ...c, qty_on_hand: '' }, '2026-08-01').low, false);
+  assert.equal(consumableStatus({ name: 'x' }, '2026-08-01').next, null);
+  assert.equal(consumableStatus({ interval_days: 365, last_replaced: '2025-12-31' }, '2026-12-31').next, '2025-12-31'.replace('2025-12-31', '2026-12-31'));
+});
