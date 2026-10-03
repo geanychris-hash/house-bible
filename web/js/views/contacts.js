@@ -2,6 +2,7 @@
 import {
   HB, h, loadCss, openForm, mountView, register, emptyState, badge, pageHead, norm, fmtDate, money, byName,
 } from './rooms-shared.js';
+import { renderJobs } from './contacts-jobs.js';
 
 loadCss('rooms');
 
@@ -30,6 +31,8 @@ export async function editContact(c, onDone) {
 
 // One contact card; also used by the Emergency screen.
 export function contactCard(c, { editable = true } = {}) {
+  const jobs = h('div', { class: 'rec-jobs' });
+  try { Promise.resolve(renderJobs(c, jobs)).catch(() => {}); } catch { /* jobs are optional */ }
   return h('div', { class: 'rec-panel rec-contact' },
     h('div', { class: 'rec-row rec-between' },
       h('div', null, h('div', { class: 'rec-title' }, c.name), h('div', { class: 'rec-sub rec-muted' }, [c.trade, c.company].filter(Boolean).join(' / '))),
@@ -39,7 +42,8 @@ export function contactCard(c, { editable = true } = {}) {
       c.email ? h('a', { class: 'rec-btn', href: 'mailto:' + c.email }, 'Email') : null,
       editable ? h('button', { class: 'rec-btn', type: 'button', onclick: () => editContact(c) }, 'Edit') : null),
     (c.last_job || c.cost) ? h('p', { class: 'rec-sub rec-muted' }, ['Last job: ' + [c.last_job, fmtDate(c.last_job_date)].filter(Boolean).join(', '), c.cost ? money(c.cost) : ''].filter(Boolean).join(' / ')) : null,
-    c.notes ? h('p', { class: 'rec-sub' }, c.notes) : null);
+    c.notes ? h('p', { class: 'rec-sub' }, c.notes) : null,
+    jobs);
 }
 
 function build(rt, data) {

@@ -4,10 +4,12 @@ import {
   panel, thumbStrip, norm, fmtDate, toast, encodeFiles, parseFilesValue, asIds, expiryState,
 } from './rooms-shared.js';
 import { openAddDocuments, docRows } from './documents.js';
+import { renderServiceHistory } from './assets-history.js';
+import { lifespanFields, valueFields, valueRows } from './assets-values.js';
 
 loadCss('rooms');
 
-const KINDS = [['system', 'System'], ['appliance', 'Appliance'], ['fixture', 'Fixture'], ['other', 'Other']];
+const KINDS = [['system', 'System'], ['appliance', 'Appliance'], ['fixture', 'Fixture'], ['other', 'Other'], ['belonging', 'Belonging']];
 const KIND_LABEL = Object.fromEntries(KINDS);
 const state = { q: '', kind: '', room: '' };
 
@@ -24,6 +26,8 @@ export async function editAsset(asset, onDone, { plate = false } = {}) {
     { key: 'fuel', label: 'Fuel / power', placeholder: 'Natural gas, electric' },
     { key: 'install_date', label: 'Install date', type: 'date' },
     { key: 'warranty_expires', label: 'Warranty expires', type: 'date' },
+    ...lifespanFields(),
+    ...valueFields(),
     { key: 'pro_only', label: 'Licensed pro only (gas, flue, main electrical)', type: 'bool' },
     { key: 'notes', label: 'Notes', type: 'textarea' },
     ...(plate ? [] : [{ key: 'photos', label: 'Photos', type: 'files', parentKind: 'assets' }]),
@@ -107,7 +111,10 @@ function buildDetail(id, data) {
     add('Location', a.location); add('Brand', a.brand); add('Model', a.model); add('Serial', a.serial); add('Fuel', a.fuel);
     add('Installed', fmtDate(a.install_date));
     if (a.warranty_expires) { kv.push(h('dt', null, 'Warranty'), h('dd', null, fmtDate(a.warranty_expires) + ' ', expiryBadge(a.warranty_expires, 90))); }
+    valueRows(a).forEach(([k, v]) => add(k, v));
     add('Notes', a.notes);
+    const hist = h('div', { class: 'rec-history' });
+    try { Promise.resolve(renderServiceHistory(a, hist)).catch(() => {}); } catch { /* history is optional */ }
     const tasks = (data.tasks || []).filter(t => t.asset === id && Number(t.active) !== 0);
     const cons = (data.consumables || []).filter(c => c.asset === id);
     const mine = attachedDocs(a, docs);
@@ -123,6 +130,7 @@ function buildDetail(id, data) {
           h('button', { class: 'rec-btn rec-small', type: 'button', onclick: () => openAddDocuments({ asset: id, kind: 'manual', room: a.room }) }, 'Add manual'),
           h('button', { class: 'rec-btn rec-small', type: 'button', onclick: () => attachExisting(a, docs) }, 'Link existing')),
         panel('Maintenance tasks', tasks.length ? h('div', { class: 'rec-list' }, tasks.map(t => plain(t.title, t.category))) : h('p', { class: 'rec-muted' }, 'No tasks for this asset.')),
+        hist,
         cons.length ? panel('Consumables', h('div', { class: 'rec-list' }, cons.map(c => plain(c.name, [c.spec, c.qty_on_hand != null && c.qty_on_hand !== '' ? `${c.qty_on_hand} on hand` : ''].filter(Boolean).join(' / '))))) : null));
   }
   return { node: body, refresh: update };

@@ -2,6 +2,7 @@
 import { registerView } from '../core/router.js';
 import * as HBFiles from '../core/files.js';
 import { HB, h, panel, btn, empty, tabBar, money0, fmtDate, ensureCss, idMap, csvEscape, downloadText, watchTables } from './projects-common.js';
+import { lifespanSection, insuranceSection } from './reports-forecast.js';
 import { improvementsByYear, bigPurchases, matchAssetCost, parseJson, num0 } from '../core/plan.js';
 
 /* Load thumbnails after the DOM exists; a missing photo never breaks the report. */
@@ -21,8 +22,11 @@ registerView({
     ensureCss();
     const st = { tab: 'improve', threshold: 250 };
     const draw = async () => {
-      const [expenses, projects, assets, rooms] = await Promise.all(['expenses', 'projects', 'assets', 'rooms'].map(t => HB.list(t)));
+      const [expenses, projects, assets, rooms, tasks] = await Promise.all(['expenses', 'projects', 'assets', 'rooms', 'tasks'].map(t => HB.list(t)));
       const pNames = idMap(projects), rNames = idMap(rooms);
+      const fdata = { assets, expenses, projects, rooms, tasks };
+      const life = lifespanSection(fdata), insure = insuranceSection(fdata);
+      if (st.tab === 'lifespan' && !life) st.tab = 'improve';
       let body;
       if (st.tab === 'improve') {
         const r = improvementsByYear(expenses, projects);
@@ -36,6 +40,8 @@ registerView({
               h('div', { class: 's5-row spread' }, h('span', { class: 's5-title' }, x.item), h('span', { class: 's5-mono' }, money0(x.amount))),
               h('span', { class: 's5-muted' }, [fmtDate(x.date), x.store, pNames.get(x.project)].filter(Boolean).join(' - ')))))))
             : panel(null, null, empty('No capital improvements yet. Mark an expense as a capital improvement and it shows up here.')));
+      } else if (st.tab === 'lifespan') {
+        body = life;
       } else {
         const big = bigPurchases(expenses, st.threshold);
         const csv = () => downloadText('inventory.csv', ['name,kind,room,brand,model,serial,installed,cost'].concat(assets.map(a => { const c = matchAssetCost(a, expenses); return [a.name, a.kind, rNames.get(a.room) || '', a.brand, a.model, a.serial, a.install_date, c ? c.amount : ''].map(csvEscape).join(','); })).join('\n'));
@@ -53,11 +59,12 @@ registerView({
           })) : empty('No assets recorded yet.')),
           panel('Big purchases', null, big.length ? h('div', { class: 's5-list' }, big.map(x => h('div', { class: 's5-item' },
             h('div', { class: 's5-row spread' }, h('span', { class: 's5-title' }, x.item), h('span', { class: 's5-mono' }, money0(x.amount))),
-            h('span', { class: 's5-muted' }, [fmtDate(x.date), x.store, rNames.get(x.room)].filter(Boolean).join(' - '))))) : empty('No purchases at or above that amount.')));
+            h('span', { class: 's5-muted' }, [fmtDate(x.date), x.store, rNames.get(x.room)].filter(Boolean).join(' - '))))) : empty('No purchases at or above that amount.')),
+          insure);
       }
-      container.replaceChildren(h('div', { class: 's5-list s5-report' }, h('div', { class: 's5-noprint' }, tabBar([['improve', 'Improvement costs'], ['inventory', 'Inventory']], st.tab, k => { st.tab = k; draw(); })), body));
+      container.replaceChildren(h('div', { class: 's5-list s5-report' }, h('div', { class: 's5-noprint' }, tabBar([['improve', 'Improvement costs'], ['inventory', 'Inventory'], ...(life ? [['lifespan', 'Lifespan']] : [])], st.tab, k => { st.tab = k; draw(); })), body));
     };
     draw();
-    return watchTables(container, ['expenses', 'projects', 'assets', 'rooms'], draw);
+    return watchTables(container, ['expenses', 'projects', 'assets', 'rooms', 'tasks'], draw);
   },
 });

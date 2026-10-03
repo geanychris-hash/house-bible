@@ -87,3 +87,11 @@ Do them in order. Each is under 2 minutes. Tell Claude what you saw (worked / di
 7. Weather alerts: add your email, tap "Send test alert". An email should arrive within a minute (check spam).
 8. Wife's phone: send her the setup link privately. She opens it, names the device (Wife-phone), Test and save. Edit anything on her phone and check it appears on yours after Sync.
 9. Airplane mode test on your phone: turn airplane mode on, add a steam log entry, turn it off. The chip should go from "waiting" to "Online" and the entry should appear on the computer.
+
+## F0: push the new columns and history action to Google
+Needed only for the live app. The app still works without it; new fields just will not save to the Sheet until you do. Each step is under 2 minutes.
+1. In a terminal in the repo folder (on main, after F0 is merged): `node apps-script/build.mjs` (rebuilds the schema files, safe to repeat).
+2. `clasp push` (answer `y` if it asks to overwrite the manifest). If it says you are logged out, run `clasp login` first and sign in to the Google account that owns the script.
+3. `clasp open-script`, then in the editor click Deploy, Manage deployments, the pencil (edit) icon on your existing deployment, Version: New version, Deploy. The web app address stays the same.
+4. Open the app on your computer and tap Sync. The Sheet gets the new columns at the end of each tab the first time the app saves a row (the backend adds missing columns by itself).
+5. Phones: reload the app once; the new version loads within a minute.

@@ -123,3 +123,10 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 ## Cross-stream requests (S6)
 - 2026-10-03 [S6] To S2: Home screen has no link to a house-facts/settings editor (checklist step "House facts" links to a view id `settings`, which does not exist yet). Please provide one or tell S7 to.
 - 2026-10-03 [S6] To S1: settings.house default lat/lon (42.158, -71.145) is unverified; seed/house.json leaves them null on purpose, so do not load it over the defaults.
+
+## F0 foundation decisions (feature-gaps build)
+- 2026-10-03 [F0] Stub seams may be sync or async: callers wrap them in try/catch and ignore rejections, so a Wave 1 bug in a seam cannot break asset detail, contact cards or reports.
+- 2026-10-03 [F0] `reports-forecast` sections are sync and return `null` when empty; Reports hides the Lifespan tab until `lifespanSection` returns a node. Reports now also loads `tasks` and passes them in `data`.
+- 2026-10-03 [F0] `history` default limit 100, max 500, missing tab returns an empty list. `schemaVersion` not bumped (append-only columns; tests and the `settings` seed key expect 1).
+- 2026-10-03 [F0] Edited S2's `web/js/core/schema.js` (num types for new columns) and `web/js/core/views.json` (regenerated, now lists the four stub modules). Wave 1 sessions that add a view file (G4 `wall`) will conflict on `views.json`: Integration should regenerate it with `node web/dev/gen-views.mjs` instead of merging by hand.
+- 2026-10-03 [F0] Seed files need no change: new columns are optional and `load-seed` / `import-receipts` leave them blank.

@@ -1,6 +1,9 @@
 [
+ "assets-history",
+ "assets-values",
  "assets",
  "consumables",
+ "contacts-jobs",
  "contacts",
  "documents",
  "expenses",
@@ -16,6 +19,7 @@
  "projects",
  "qr-encoder",
  "qr",
+ "reports-forecast",
  "reports",
  "rooms-shared",
  "rooms-units",
