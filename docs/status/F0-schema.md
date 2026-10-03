@@ -8,7 +8,7 @@
 - CONTRACT v3 (section 12 plus table, API and ownership edits), DECISIONS, HUMAN-STEPS (clasp push and redeploy).
 
 ## Tested
-- `node --check` on every JS file touched. `node --test` on all 12 test files: 130 plus 2 new tests (history, v3 columns), all pass.
+- `node --check` on every JS file touched. `node --test` on all 12 test files: 130 pass, including 2 new tests (history, v3 columns).
 - Mock server plus built-in browser at 400 and 1200 px: assets list, asset detail (with new-column data), add-asset form, contacts, reports, tools, utilities, home, emergency all render; no horizontal scroll; no page errors.
 - Only console message: the in-app browser could not register the service worker ("unknown error fetching the script"). It is the preview environment, not this change; not retested elsewhere.
 
