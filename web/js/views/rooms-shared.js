@@ -57,8 +57,8 @@ export function confirmDialog(message, { yes = 'Delete', danger = true } = {}) {
     const { close } = modal('Please confirm', (close2) => h('div', { class: 'rec-stack' },
       h('p', null, message),
       h('div', { class: 'rec-row rec-end' },
-        h('button', { class: 'rec-btn', type: 'button', onclick: () => { close2(); res(false); } }, 'Cancel'),
-        h('button', { class: 'rec-btn ' + (danger ? 'rec-danger' : 'rec-primary'), type: 'button', onclick: () => { close2(); res(true); } }, yes))),
+        h('button', { class: 'rec-btn', type: 'button', onclick: () => { res(false); close2(); } }, 'Cancel'),
+        h('button', { class: 'rec-btn ' + (danger ? 'rec-danger' : 'rec-primary'), type: 'button', onclick: () => { res(true); close2(); } }, yes))),
       { onClose: () => res(false) });
     void close;
   });
@@ -364,6 +364,7 @@ export async function register(def) {
 }
 
 // ---------- small UI parts ----------
+export const fill = (el, ...kids) => el.replaceChildren(...kids.flat(Infinity).filter(k => k != null && k !== false));
 export const refName = (rows, id, key = 'name') => { const r = (rows || []).find(x => x.id === id); return r ? (r[key] || '(unnamed)') : ''; };
 export const byName = (key = 'name') => (a, b) => String(a[key] || '').localeCompare(String(b[key] || ''));
 export const emptyState = (title, body, action) => h('div', { class: 'rec-empty' }, h('strong', null, title), body ? h('p', { class: 'rec-muted' }, body) : null, action || null);

@@ -1,6 +1,6 @@
 // One-pipe steam log: water level, pressure, events, a simple trend, and a what-to-look-for checklist.
 import {
-  HB, h, loadCss, openForm, mountView, register, emptyState, badge, pageHead, panel, thumbStrip, encodeFiles, parseFilesValue,
+  HB, h, fill, loadCss, openForm, mountView, register, emptyState, badge, pageHead, panel, thumbStrip, encodeFiles, parseFilesValue,
   todayISO, fmtDate, lsGet, lsSet,
 } from './rooms-shared.js';
 
@@ -84,7 +84,7 @@ function build(rt, data) {
   function update() {
     const all = (data.steam_log || []).slice().sort((a, b) => String(a.date + (a.time || '')).localeCompare(String(b.date + (b.time || ''))));
     const last = all[all.length - 1];
-    trend.replaceChildren(
+    fill(trend, 
       last ? h('p', { class: 'rec-muted' }, `Latest: ${fmtDate(last.date)}${last.time ? ' ' + last.time : ''}. Water ${LEVEL_LABEL[last.water_level] ? LEVEL_LABEL[last.water_level].toLowerCase() : 'not checked'}${last.pressure_psi !== '' && last.pressure_psi != null ? `, ${last.pressure_psi} psi` : ''}.`) : null,
       trendChart(all), levelStrip(all));
     if (!all.length) { list.replaceChildren(emptyState('No entries yet', 'Log the sight glass and gauge every few days in the heating season, and any time something sounds wrong.')); return; }

@@ -1,6 +1,6 @@
 // Assets: systems, appliances, fixtures. Model and serial, install date, warranty tracker, manuals from documents.
 import {
-  HB, h, loadCss, openForm, modal, mountView, register, link, refName, byName, emptyState, badge, expiryBadge, pageHead,
+  HB, h, fill, loadCss, openForm, modal, mountView, register, link, refName, byName, emptyState, badge, expiryBadge, pageHead,
   panel, thumbStrip, norm, fmtDate, toast, encodeFiles, parseFilesValue, asIds, expiryState,
 } from './rooms-shared.js';
 import { openAddDocuments, docRows } from './documents.js';
@@ -98,7 +98,7 @@ function buildDetail(id, data) {
   const body = h('div', { class: 'rec-view' });
   function update() {
     const a = (data.assets || []).find(x => x.id === id);
-    if (!a || Number(a.deleted)) { body.replaceChildren(emptyState('Asset not found', null, link('#/assets', 'Back to assets', 'rec-btn'))); return; }
+    if (!a || Number(a.deleted)) { fill(body, emptyState('Asset not found', null, link('#/assets', 'Back to assets', 'rec-btn'))); return; }
     const rooms = data.rooms || [], docs = data.documents || [];
     const kv = [];
     const add = (k, v) => { if (v) kv.push(h('dt', null, k), h('dd', null, v)); };
@@ -112,7 +112,7 @@ function buildDetail(id, data) {
     const cons = (data.consumables || []).filter(c => c.asset === id);
     const mine = attachedDocs(a, docs);
     const plain = (t, s) => h('div', { class: 'rec-item' }, h('span', { class: 'rec-grow' }, h('span', { class: 'rec-title' }, t), h('span', { class: 'rec-sub' }, s)));
-    body.replaceChildren(
+    fill(body, 
       h('div', { class: 'rec-row' }, link('#/assets', 'All assets', 'rec-btn rec-small')),
       pageHead(a.name, h('button', { class: 'rec-btn', type: 'button', onclick: () => editAsset(a) }, 'Edit')),
       Number(a.pro_only) ? h('div', { class: 'rec-note rec-bad' }, h('p', null, 'Licensed pro only. Do not repair or adjust this yourself (gas, flue, or main electrical).')) : null,

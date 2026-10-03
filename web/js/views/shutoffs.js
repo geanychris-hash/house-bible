@@ -1,6 +1,6 @@
 // Shutoffs and the Emergency screen. Both read only from the local cache, so they work with no network.
 import {
-  HB, h, loadCss, openForm, mountView, register, refName, byName, emptyState, badge, pageHead, panel, thumbStrip,
+  HB, h, fill, loadCss, openForm, mountView, register, refName, byName, emptyState, badge, pageHead, panel, thumbStrip,
   encodeFiles, parseFilesValue, norm,
 } from './rooms-shared.js';
 import { contactCard } from './contacts.js';
@@ -77,13 +77,13 @@ function buildEmergency(rt, data) {
       return panel(title, list.length ? h('div', { class: 'rec-list' }, list.map(s => shutoffCard(s, rooms, { big: true })))
         : h('p', { class: 'rec-muted' }, `No ${TYPE_LABEL[type].toLowerCase()} shutoff recorded. `, h('a', { href: '#/shutoffs' }, 'Add one')));
     };
-    body.replaceChildren(
+    fill(body, 
       pageHead('Emergency'),
       netNote,
       h('div', { class: 'rec-note rec-bad' },
         h('p', null, h('strong', null, 'Smell gas or hear a hiss: '), 'leave the house now. Do not touch switches or use a phone inside. Call 911 from outside. Gas work and boiler work are for a licensed pro only.'),
         h('p', null, h('strong', null, 'Fire, sparks, or burning smell from electrical: '), 'get everyone out and call 911. Main electrical is for a licensed pro.'),
-        h('p', null, h('strong', null, 'Burst pipe or flooding: '), 'shut off the main water, then electric to wet areas only if it is safe and dry to reach.')),
+        h('p', null, h('strong', null, 'Burst pipe or flooding: '), 'shut off the main water. If water is near outlets, appliances or the electrical panel, stay clear and call a licensed electrician.')),
       section('water', 'Water shutoff'), section('gas', 'Gas shutoff'), section('electric', 'Electric shutoff'),
       group('other').length ? section('other', 'Other shutoffs') : null,
       panel('Key contacts', contacts.length ? h('div', { class: 'rec-list' }, contacts.map(c => contactCard(c, { editable: false })))

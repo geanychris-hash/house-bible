@@ -1,7 +1,7 @@
 // Room records: list, detail page with dimensions, finishes, photos, and automatic panels
 // (assets, documents, tasks, projects, expenses) that read other tables filtered by room.
 import {
-  HB, h, loadCss, openForm, mountView, register, link, byName, emptyState, badge, pageHead, panel, thumbStrip,
+  HB, h, fill, loadCss, openForm, mountView, register, link, byName, emptyState, badge, pageHead, panel, thumbStrip,
   fmtLength, sqft, money, fmtDate, norm, toast, encodeFiles, parseFilesValue,
 } from './rooms-shared.js';
 import { openAddDocuments, docRows } from './documents.js';
@@ -95,7 +95,7 @@ function buildDetail(id, data) {
   const body = h('div', { class: 'rec-view' });
   function update() {
     const r = (data.rooms || []).find(x => x.id === id);
-    if (!r || Number(r.deleted)) { body.replaceChildren(emptyState('Room not found', null, link('#/rooms', 'Back to rooms', 'rec-btn'))); return; }
+    if (!r || Number(r.deleted)) { fill(body, emptyState('Room not found', null, link('#/rooms', 'Back to rooms', 'rec-btn'))); return; }
     const d = dims(r);
     const kv = [];
     const add = (k, v) => { if (v) kv.push(h('dt', null, k), h('dd', null, v)); };
@@ -116,7 +116,7 @@ function buildDetail(id, data) {
     const total = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
     const list = (rows, row, empty) => rows.length ? h('div', { class: 'rec-list' }, rows.map(row)) : h('p', { class: 'rec-muted' }, empty);
     const plain = (title, sub, extra) => h('div', { class: 'rec-item' }, h('span', { class: 'rec-grow' }, h('span', { class: 'rec-title' }, title), h('span', { class: 'rec-sub' }, sub)), extra);
-    body.replaceChildren(
+    fill(body, 
       h('div', { class: 'rec-row' }, link('#/rooms', 'All rooms', 'rec-btn rec-small')),
       pageHead(r.name, h('button', { class: 'rec-btn', type: 'button', onclick: () => editRoom(r) }, 'Edit room')),
       kv.length ? h('dl', { class: 'rec-kv' }, kv) : h('p', { class: 'rec-muted' }, 'No details yet. Tap Edit room to add dimensions, flooring and paint.'),

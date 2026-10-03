@@ -187,7 +187,7 @@ function build(rt, data) {
     const items = (data.sensitive || []).slice().sort((a, b) => String(a.label).localeCompare(String(b.label)));
     const sel = h('select', { 'aria-label': 'Lock after', onchange: e => { lsSet('hb.sens.timeout', e.target.value); armTimer(); } },
       TIMEOUTS.map(([m, l]) => h('option', { value: m, selected: m === timeoutMin() }, l)));
-    toolbar.append(h('button', { class: 'rec-btn', type: 'button', onclick: () => lock('Locked.') }, 'Lock now'),
+    toolbar.append(h('button', { class: 'rec-btn', type: 'button', onclick: () => lock('Locked.') }, isRemembered() ? 'Lock until reload' : 'Lock now'),
       isRemembered() ? h('button', { class: 'rec-btn', type: 'button', onclick: async () => { await forget(); toast('Forgotten on this device.'); } }, 'Forget on this device')
         : h('label', { class: 'rec-row' }, 'Lock after ', sel));
     screen.replaceChildren(
