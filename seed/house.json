@@ -1,0 +1,21 @@
+{
+  "key": "house",
+  "value": {
+    "address": "353 Washington St, Canton, MA 02021",
+    "lat": null,
+    "lon": null,
+    "year_built": null,
+    "sqft": null,
+    "floors": null,
+    "lot": null,
+    "bedrooms": null,
+    "bathrooms": null,
+    "heat": "One-pipe steam (per Chris)"
+  },
+  "sources": {
+    "address": "Chris, 2026-10-03",
+    "heat": "Chris, 2026-10-03",
+    "others": "Not read. Zillow and Redfin returned HTTP 403 to an automated read and Realtor.com is blocked from this tool on 2026-10-03. Nothing was guessed."
+  },
+  "confidence": { "address": "high", "heat": "high", "year_built": "unknown", "sqft": "unknown", "floors": "unknown", "lat": "unknown", "lon": "unknown" }
+}
