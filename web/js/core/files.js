@@ -137,6 +137,18 @@ export async function thumbUrl(fileId) {
   return url;
 }
 
+// Full file as a Blob (from the local cache or the server); used by Download buttons.
+export async function blob(fileId) {
+  await HB.init();
+  let rec = await adapter.get('blobs', fileId);
+  if (!rec) {
+    const res = await HB.callApi('file', { fileId });
+    rec = { blob: base64ToBlob(res.dataBase64, res.mime), name: res.name, mime: res.mime };
+    await adapter.batch([{ store: 'blobs', key: fileId, value: rec }]);
+  }
+  return rec.blob;
+}
+
 // Fetch the full file (or use the local copy) and open it in a new tab; falls back to a download.
 export async function open(fileId) {
   await HB.init();

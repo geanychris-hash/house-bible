@@ -40,29 +40,9 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [S1] `file` and `thumb` serve only files inside the House Bible Files folders, so the key cannot read the rest of Chris's Drive. The monthly backup sends backups beyond the newest 12 to Drive trash (recoverable); that is the only removal the backend does.
 - 2026-10-03 [S1] Key setup: the Apps Script editor cannot pass arguments, so Chris edits the string in `runSetKey()`, runs it, and reverts the text. Only the SHA-256 hash is stored. Unset key and wrong key both return plain `{ok:false,error:"auth"}`.
 - 2026-10-03 [S1] The script lock helper is re-entrant within one execution. The first version deadlocked calendar sync against its own settings write; the Node tests caught it.
-# Decisions log
 
-Append one dated line per decision. Never edit other people's lines. Format: `- YYYY-MM-DD [stream] decision, reason.`
 
-## Chris's decisions (from the questions file, 2026-10-03)
-- 2026-10-03 [Chris] Backend: Google Sheet + Apps Script + Drive, chosen over Firebase. Reason: Firebase file storage may need a paid plan, still needs console setup, and the Sheet is openable and fixable by hand. Chris's condition was "free, as usable, minimal human setup"; the Sheet route meets all three.
-- 2026-10-03 [Chris] Users: Chris and his wife, both editing. Devices: Windows PCs, Samsung phone, iPhone.
-- 2026-10-03 [Chris] Offline: online is required, offline edits are a nice extra if easy. Treat as: read from local cache offline, queue edits, sync later.
-- 2026-10-03 [Chris] Priorities: 1 maintenance scheduling, 2 documents vault, 3 room records.
-- 2026-10-03 [Chris] Must-haves: documents vault, contacts, consumables, steam log, room records, weather nudges, and any user-defined recurring tasks (example: dog heartworm medicine every 30 days).
-- 2026-10-03 [Chris] Nice-to-haves: expense ledger, utilities and fuel log, insurance inventory, warranty tracker, QR labels, improvement cost tally.
-- 2026-10-03 [Chris] Not wanted: weekly digest email.
-- 2026-10-03 [Chris] Reminders: Google Calendar events. Email only for weather alerts (the default said calendar plus weekly email, but he rejected the weekly digest; weather alerts are a Must, so email is kept for those).
-- 2026-10-03 [Chris] Sensitive data: some will be stored, must be protected. Access: private link plus a shared key per device on top of Google account access.
-- 2026-10-03 [Chris] Public GitHub repo for code is fine. He needs to create a GitHub account.
-- 2026-10-03 [Chris] Starting data: start fresh; import the receipts file only (28 tools, 2 paint entries); all "project clues" in the Receipts note are real projects. Files, photos and manuals are not gathered yet.
-- 2026-10-03 [Chris] Time: about 2 hours per day for Google steps and testing; deadline a few days; up to 4 sessions at once.
-- 2026-10-03 [Chris] Ambiguity during a build: pick a sensible default, record it here, keep going.
 
-## Interpretations Claude made (Chris can overrule)
-- 2026-10-03 [Claude] Chris struck through "Decorative charts" in the cut list. The instruction was "cross out any you want to keep", so the decorative charts are KEPT (year wheel, house cutaway, flow graph) along with the steam diagram. Everything else listed (barcode/OCR, Find a tool catalog, cut-list optimizer, Tasker CSV, Obsidian zip) is CUT. Visuals are lowest priority (S6, last).
-- 2026-10-03 [Claude] Sensitive data uses client-side encryption with a household passphrase (CONTRACT section 7), so the Sheet only holds ciphertext.
-- 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
 
 - 2026-10-03 [S2] View loading: the app reads `web/js/core/views.json` (a list of file names in `web/js/views/`) and dynamically imports each one, skipping failures. Reason: a plain import of a missing file puts a 404 in the console. `node web/dev/gen-views.mjs` writes the file; the mock server computes it live; `tools/deploy-pages.ps1` runs it. Integration must run it (or deploy) after merging view branches; the committed copy is `[]`.
 - 2026-10-03 [S2] Nav: first 4 views by `order` show in the phone tab bar, the rest under "More"; all show in the side nav on wide screens. A view with id `home` replaces the placeholder Home. `hidden:true` keeps a view out of the nav (used by the Connect screen).
@@ -91,29 +71,9 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [S3] CROSS-STREAM REQUEST to S2: `HB.deviceLabel()` (optional) returning the device label so `task_log.by` is filled; S3 falls back to localStorage `hb.device` or blank.
 - 2026-10-03 [S3] CROSS-STREAM REQUEST to S2: if the router wants view CSS loaded by itself, say so; S3 views currently inject `css/maintenance.css` themselves via a relative `<link>`.
 - 2026-10-03 [S3] CROSS-STREAM NOTE for S1: `testAlert` must read `settings.notify` where `value` is a JSON string `{"emails":[...]}`; `settings.alerts` value is `{"rules":[...]}`. S3 writes rows with `id` equal to the key.
-# Decisions log
 
-Append one dated line per decision. Never edit other people's lines. Format: `- YYYY-MM-DD [stream] decision, reason.`
 
-## Chris's decisions (from the questions file, 2026-10-03)
-- 2026-10-03 [Chris] Backend: Google Sheet + Apps Script + Drive, chosen over Firebase. Reason: Firebase file storage may need a paid plan, still needs console setup, and the Sheet is openable and fixable by hand. Chris's condition was "free, as usable, minimal human setup"; the Sheet route meets all three.
-- 2026-10-03 [Chris] Users: Chris and his wife, both editing. Devices: Windows PCs, Samsung phone, iPhone.
-- 2026-10-03 [Chris] Offline: online is required, offline edits are a nice extra if easy. Treat as: read from local cache offline, queue edits, sync later.
-- 2026-10-03 [Chris] Priorities: 1 maintenance scheduling, 2 documents vault, 3 room records.
-- 2026-10-03 [Chris] Must-haves: documents vault, contacts, consumables, steam log, room records, weather nudges, and any user-defined recurring tasks (example: dog heartworm medicine every 30 days).
-- 2026-10-03 [Chris] Nice-to-haves: expense ledger, utilities and fuel log, insurance inventory, warranty tracker, QR labels, improvement cost tally.
-- 2026-10-03 [Chris] Not wanted: weekly digest email.
-- 2026-10-03 [Chris] Reminders: Google Calendar events. Email only for weather alerts (the default said calendar plus weekly email, but he rejected the weekly digest; weather alerts are a Must, so email is kept for those).
-- 2026-10-03 [Chris] Sensitive data: some will be stored, must be protected. Access: private link plus a shared key per device on top of Google account access.
-- 2026-10-03 [Chris] Public GitHub repo for code is fine. He needs to create a GitHub account.
-- 2026-10-03 [Chris] Starting data: start fresh; import the receipts file only (28 tools, 2 paint entries); all "project clues" in the Receipts note are real projects. Files, photos and manuals are not gathered yet.
-- 2026-10-03 [Chris] Time: about 2 hours per day for Google steps and testing; deadline a few days; up to 4 sessions at once.
-- 2026-10-03 [Chris] Ambiguity during a build: pick a sensible default, record it here, keep going.
 
-## Interpretations Claude made (Chris can overrule)
-- 2026-10-03 [Claude] Chris struck through "Decorative charts" in the cut list. The instruction was "cross out any you want to keep", so the decorative charts are KEPT (year wheel, house cutaway, flow graph) along with the steam diagram. Everything else listed (barcode/OCR, Find a tool catalog, cut-list optimizer, Tasker CSV, Obsidian zip) is CUT. Visuals are lowest priority (S6, last).
-- 2026-10-03 [Claude] Sensitive data uses client-side encryption with a household passphrase (CONTRACT section 7), so the Sheet only holds ciphertext.
-- 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
 - 2026-10-03 [S4] Views do not depend on `HBui.openForm` or `HBui.h`: `web/js/views/rooms-shared.js` has its own small `h`, modal and form builder (types text, textarea, num, date, time, select, ref, bool, files, length). Reason: core/ui.js did not exist yet and its form spec was not fixed. Easy to swap later.
 - 2026-10-03 [S4] Shared S4 helpers live in `rooms-shared.js` and `rooms-units.js` (pure, unit tested) so they match the `rooms*` ownership glob. All S4 CSS classes are prefixed `rec-`, with fallbacks for token names, in `web/css/{rooms,documents,sensitive,qr}.css`.
 - 2026-10-03 [S4] Views route themselves from `location.hash`: `#/rooms`, `#/rooms/<id>`, `#/assets/<id>`, `#/documents/<id>`, plus aliases `#/room/<id>`, `#/asset/<id>`, `#/document/<id>`. Filters via query: `#/documents?room=<id>`, `#/assets?room=<id>`.
@@ -136,29 +96,9 @@ Append one dated line per decision. Never edit other people's lines. Format: `- 
 - 2026-10-03 [S4 -> S2] ui.js: S4 uses its own `toast`/modal CSS; if ui.js exports `toast`, S4 calls it (`HBui.toast(msg)`).
 - 2026-10-03 [S4 -> S1] schema: `settings` row `crypto` stores `{salt, check}` inside `value`; nothing to change if `value` is a free json string.
 - 2026-10-03 [S4 -> S6] seed: pass `HB.save('rooms', ...)` with `floor` values from `1st floor, 2nd floor, 3rd floor, Basement, Attic, Outside` so the room list sorts right.
-# Decisions log
 
-Append one dated line per decision. Never edit other people's lines. Format: `- YYYY-MM-DD [stream] decision, reason.`
 
-## Chris's decisions (from the questions file, 2026-10-03)
-- 2026-10-03 [Chris] Backend: Google Sheet + Apps Script + Drive, chosen over Firebase. Reason: Firebase file storage may need a paid plan, still needs console setup, and the Sheet is openable and fixable by hand. Chris's condition was "free, as usable, minimal human setup"; the Sheet route meets all three.
-- 2026-10-03 [Chris] Users: Chris and his wife, both editing. Devices: Windows PCs, Samsung phone, iPhone.
-- 2026-10-03 [Chris] Offline: online is required, offline edits are a nice extra if easy. Treat as: read from local cache offline, queue edits, sync later.
-- 2026-10-03 [Chris] Priorities: 1 maintenance scheduling, 2 documents vault, 3 room records.
-- 2026-10-03 [Chris] Must-haves: documents vault, contacts, consumables, steam log, room records, weather nudges, and any user-defined recurring tasks (example: dog heartworm medicine every 30 days).
-- 2026-10-03 [Chris] Nice-to-haves: expense ledger, utilities and fuel log, insurance inventory, warranty tracker, QR labels, improvement cost tally.
-- 2026-10-03 [Chris] Not wanted: weekly digest email.
-- 2026-10-03 [Chris] Reminders: Google Calendar events. Email only for weather alerts (the default said calendar plus weekly email, but he rejected the weekly digest; weather alerts are a Must, so email is kept for those).
-- 2026-10-03 [Chris] Sensitive data: some will be stored, must be protected. Access: private link plus a shared key per device on top of Google account access.
-- 2026-10-03 [Chris] Public GitHub repo for code is fine. He needs to create a GitHub account.
-- 2026-10-03 [Chris] Starting data: start fresh; import the receipts file only (28 tools, 2 paint entries); all "project clues" in the Receipts note are real projects. Files, photos and manuals are not gathered yet.
-- 2026-10-03 [Chris] Time: about 2 hours per day for Google steps and testing; deadline a few days; up to 4 sessions at once.
-- 2026-10-03 [Chris] Ambiguity during a build: pick a sensible default, record it here, keep going.
 
-## Interpretations Claude made (Chris can overrule)
-- 2026-10-03 [Claude] Chris struck through "Decorative charts" in the cut list. The instruction was "cross out any you want to keep", so the decorative charts are KEPT (year wheel, house cutaway, flow graph) along with the steam diagram. Everything else listed (barcode/OCR, Find a tool catalog, cut-list optimizer, Tasker CSV, Obsidian zip) is CUT. Visuals are lowest priority (S6, last).
-- 2026-10-03 [Claude] Sensitive data uses client-side encryption with a household passphrase (CONTRACT section 7), so the Sheet only holds ciphertext.
-- 2026-10-03 [Claude] House facts (year built, size, floors) are to be read from the Zillow, Redfin and Realtor links Chris gave; not fetched yet. Boiler, systems, project list and worries were left blank: the app's setup checklist collects them.
 
 ## Contract requests
 - 2026-10-03 [S5] Optional: add `tools` (json array of text) to `projects` so tools needed is not hiding in `parts`. Needs S1 schema.json plus a one-time move of `parts.tools`.

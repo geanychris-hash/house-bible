@@ -75,3 +75,15 @@ Load the starter tasks (43 house and steam tasks) once the backend is running. A
 2. (2 min) Fill in house facts: open https://www.zillow.com/homedetails/353-Washington-St-Canton-MA-02021/184093596_zpid/ in your browser (automated reads were blocked), note year built, square feet, floors and lot size, and enter them in the app once a settings screen exists, or type them in the `settings` tab of the Sheet (row `house`).
 3. (1 min) Confirm the house location: in Google Maps right-click your house, click the numbers at the top of the menu to copy latitude and longitude, and check they match the Sheet's `settings` row `house` (default lat 42.158, lon -71.145). Weather alerts use this.
 4. (1 min) In the vault folder `Areas/Home Projects/House Bible/`, decide what to do with the stray `Radiators.md.gdoc`. Nothing was deleted.
+
+## S7: Real-device checks (do these after S1 and S2 steps above are finished)
+Do them in order. Each is under 2 minutes. Tell Claude what you saw (worked / did not) after each one.
+1. Open the app address from step S2 on your computer. It should say Connect. Paste the Apps Script address and the key, name the device (Chris-pc), tap Test and save. Home should show "Online".
+2. Connect page, "Copy setup link". Send that link to yourself privately (not a group chat). Open it on the Samsung in Chrome. Name it Chris-phone, Test and save. Menu (three dots), "Install app" or "Add to Home screen". Open it from the new icon.
+3. Do the same on the iPhone in Safari: open the link, name it, Share button, "Add to Home Screen". Open from the icon. Camera and photos work only from Safari or the installed icon, not inside other apps' browsers.
+4. On the phone: Rooms, add a room, tap the photo button, take a picture. It should show a small preview. Then on the computer tap Sync and open Rooms: the room and photo should appear.
+5. Documents, Add, pick a PDF from the phone. On the computer open it with Open. It should show the PDF.
+6. Maintenance: open any seeded task, turn on "Calendar", save. Wait a minute, then open Google Calendar, calendar "House Bible". The event should be there. If not, tell Claude.
+7. Weather alerts: add your email, tap "Send test alert". An email should arrive within a minute (check spam).
+8. Wife's phone: send her the setup link privately. She opens it, names the device (Wife-phone), Test and save. Edit anything on her phone and check it appears on yours after Sync.
+9. Airplane mode test on your phone: turn airplane mode on, add a steam log entry, turn it off. The chip should go from "waiting" to "Online" and the entry should appear on the computer.

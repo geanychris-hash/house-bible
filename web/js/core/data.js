@@ -248,6 +248,7 @@ export const onStatus = engine.onStatus;
 export const addSyncHook = engine.addSyncHook;
 export const init = engine.init;
 export const callApi = (action, extra) => api(action, extra);
+export const deviceLabel = () => auth.deviceLabel();
 export const adapterInstance = adapter;
 
 // Called after the connection settings change.
